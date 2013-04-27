@@ -130,5 +130,3 @@ GameObjectController.prototype.checkInput = function () {
     }
 };
 
-GameObjectController.prototype.fireLaser = function () {
-};
