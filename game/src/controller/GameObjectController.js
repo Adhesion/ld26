@@ -55,7 +55,7 @@ GameObjectController.prototype.attack = function (type) {
 };
 
 GameObjectController.prototype.addScore = function (val) {
-    this.main.uiController.addScore(val);
+    this.main.state.uiController.addScore(val);
 };
 
 GameObjectController.prototype.spawnHitParticle = function (bullet) {
@@ -130,3 +130,5 @@ GameObjectController.prototype.checkInput = function () {
     }
 };
 
+GameObjectController.prototype.fireLaser = function () {
+};
