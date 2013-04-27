@@ -36,6 +36,7 @@ function Main() {
 	window.onresize = this.resize.bind( this );
 
 	// start the shit
+	this.lastFrame = Date.now();
 	this.setState( new Intro() );
 	this.resize();
 	this.update();
@@ -58,12 +59,16 @@ Main.prototype.resize = function (event) {
 };
 
 Main.prototype.update = function () {
+	var delta = Date.now() - this.lastFrame;
+
 	//update everything then render.
 	for( var controller in this.controllers ) {
-		this.controllers[controller].update();
+		this.controllers[controller].update( delta );
 	}
 
 	this.render();
+
+	this.lastFrame = Date.now();
 
 	// and then request another frame draw
 	requestAnimFrame( this.callback );
