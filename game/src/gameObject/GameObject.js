@@ -2,7 +2,6 @@ function GameObject(geometry, color, wireColor) {
     this.wireColor = wireColor ? wireColor : 0xffffff;
     this.color = color ? color : 0xff0000;
 
-
     this.pos = new THREE.Vector3(0, 0, 0);
     this.vel = new THREE.Vector3(0, 0, 0);
     this.rotation = new THREE.Vector3(0, 0, 0);
@@ -24,13 +23,16 @@ function GameObject(geometry, color, wireColor) {
     this.hitCountMax = 2;
     this.hitCount = 0;
 
-    this.hp = 5;
+    this.hp = 1;
     this.size = 10;
     this.alive = true;
 }
 
 GameObject.prototype.update = function () {
-    this.pos.addSelf(this.vel);
+    this.pos.x += this.vel.x;
+    this.pos.y += this.vel.y;
+    this.pos.z += this.vel.z;
+
     this.holder.position = this.pos;
     this.holder.rotation = this.rotation;
 

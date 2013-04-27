@@ -3,121 +3,53 @@ function GameObjectController(main) {
     this.input = new Input();
 
     this.avatar = new Avatar();
-    this.avatar.pos.y = -100;
-
-    this.weapon = "gatling"; // "gatling", or "laser"
-    this.bulletDamage = 1; //damage per bullet
-    this.lazerDamage = 0.05; //damage per frame
-    this.collisionDamage = 1;
-    this.gatlingFireDelay = this.gatlingFireCount = 3;
-    this.baddieSpawnRate = this.baddieSpawnCount = 5;
-
-    this.boundsX = 225;
-    this.boundsY = 125;
+    this.baddieSpawnRate = this.baddieSpawnCount = 50;
 
     this.particles = [];
-    this.bullets = [];
-    this.baddieBullets = [];
     this.baddies = [];
-    this.laser = new Laser();
 
     this.main.add(this.avatar);
-    this.main.add(this.laser);
+
+    // have any of these keys been pressed this update cycle?
+    this.a = this.s = this.d = this.f = this.g = false;
 }
 
-
 GameObjectController.prototype.update = function () {
-    this.avatar.update();
-    this.avatar.move(this.input.move);
-
-    this.updateObjects(this.bullets);
-    this.updateObjects(this.baddieBullets);
+    this.checkInput();
     this.updateObjects(this.baddies);
     this.updateObjects(this.particles);
-    this.checkHits();
-    this.checkBaddieFire();
-    this.checkBounds();
+    this.avatar.update();
 
-    this.laser.setPos(this.avatar.pos);
-    this.laser.update();
-
-    if (this.input.a) this.weapon = "laser";
-    if (this.input.s) this.weapon = "gatling";
-    if (this.input.space) this.fire();
     this.spawnBaddie();
+    this.checkHits();
 };
 
-GameObjectController.prototype.checkBounds = function () {
-    for (var i = 0; i < this.baddies.length; i++) {
-        this.checkObjectBounds(this.baddies[i], false);
-    }
-    this.checkObjectBounds(this.avatar, true);
-};
-
-GameObjectController.prototype.checkObjectBounds = function (object, checkY) {
-    if (object.pos.x > this.boundsX) object.pos.x = this.boundsX;
-    else if (object.pos.x < -this.boundsX) object.pos.x = -this.boundsX;
-
-    if (checkY) {
-        if (object.pos.y > this.boundsY) object.pos.y = this.boundsY;
-        else if (object.pos.y < -this.boundsY) object.pos.y = -this.boundsY;
-    }
-};
 
 GameObjectController.prototype.checkHits = function () {
-    var i, j;
-    var lasered = [];
-    for (i = 0; i < this.baddies.length; i++) {
-        //avatar vs baddies RAMMING SPEED!
-        if (this.avatar.pos.distanceTo(this.baddies[i].pos) <= this.baddies[i].size * 2) {
-            this.avatar.hit(this.collisionDamage);
-            this.baddies[i].hit(this.collisionDamage);
-            this.spawnHitParticle(this.avatar);
-            if (this.avatar.pos.x > this.baddies[i].pos.x) {
-                this.avatar.vel.x = 8;
-                this.baddies[i].vel.x = -2;
-            } else {
-                this.avatar.vel.x = -8;
-                this.baddies[i].vel.x = 2;
-            }
-        }
+    var d = new THREE.Vector3();
 
-        //avatar bullets vs baddies
-        for (j = 0; j < this.bullets.length; j++) {
-            if (this.bullets[j].alive && this.baddies[i].alive && this.baddies[i].pos.distanceTo(this.bullets[j].pos) <= this.baddies[i].size * 2) {
-                this.baddies[i].hit(this.bulletDamage);
-                this.bullets[j].alive = false;
+    for (var i = 0; i < this.baddies.length; i++) {
+        d.sub(this.baddies[i].pos, this.avatar.pos);
+        if(d.length() <= this.baddies[i].size ){
+            this.spawnDieParticles(this.baddies[i]);
+            this.baddies[i].alive = false;
 
-                this.spawnHitParticle(this.bullets[j]);
-                if (!this.baddies[i].alive) {
-                    this.addScore(this.baddies[i].score);
-                    this.spawnGatlingDieParticles(this.baddies[i], this.bullets[j]);
-                }
-            }
-        }
-
-        //laser vs baddies
-        if (this.laser.fire) {
-            for (j = 0; j < this.laser.points.length; j++) {
-                if (this.baddies[i].alive && lasered.indexOf(this.baddies[i]) == -1 && this.baddies[i].pos.distanceTo(this.laser.points[j]) <= this.baddies[i].size * 2) {
-                    this.baddies[i].hit(this.bulletDamage);
-                    lasered.push(this.baddies[i]);
-                    if (!this.baddies[i].alive) {
-                        this.addScore(this.baddies[i].score);
-                        this.spawnLaserDieParticles(this.baddies[i], this.laser.points[j]);
-                    }
-                }
-            }
+            //avatar take a hit.
         }
     }
+};
 
-    //baddie bullets vs avatar
-    for (i = 0; i < this.baddieBullets.length; i++) {
-        if (this.avatar.pos.distanceTo(this.baddieBullets[i].pos) <= this.baddieBullets[i].size) {
-            this.avatar.hit(1);
-            this.baddieBullets[i].alive = false;
 
-            this.spawnHitParticle(this.baddieBullets[i]);
+GameObjectController.prototype.attack = function (type) {
+    var minY = 10000;
+    var attackIndex = -1;
+
+    for (var i = 0; i < this.baddies.length; i++) {
+        if(this.baddies[i].type == type && this.baddies[i].pos.y < minY && this.baddies[i].alive){
+            minY = this.baddies[i].pos.y;
+            this.spawnDieParticles(this.baddies[i]);
+            this.baddies[i].alive = false;
+            return;
         }
     }
 };
@@ -126,44 +58,17 @@ GameObjectController.prototype.addScore = function (val) {
     this.main.uiController.addScore(val);
 };
 
-GameObjectController.prototype.checkBaddieFire = function () {
-    for (var i = 0; i < this.baddies.length; i++) {
-        if (this.baddies[i].fire) {
-            var bullet = new BaddieBullet(this.baddies[i].pos.clone());
-            this.baddieBullets.push(bullet);
-            this.main.add(bullet);
-        }
-    }
-};
-
 GameObjectController.prototype.spawnHitParticle = function (bullet) {
     var particle = new Particle(bullet.pos.clone(), bullet.color, bullet.wireColor, bullet.size, 30, 4);
     this.particles.push(particle);
     this.main.add(particle);
 };
 
-GameObjectController.prototype.spawnGatlingDieParticles = function (baddie, bullet) {
+GameObjectController.prototype.spawnDieParticles = function (baddie) {
     var i;
     var particle;
-
-    for (i = 0; i < 5; i++) {
-        particle = new Particle(baddie.pos.clone(), baddie.color, baddie.wireColor, baddie.size, 60, 4);
-        this.particles.push(particle);
-        this.main.add(particle);
-    }
 
     for (i = 0; i < 10; i++) {
-        particle = new Particle(baddie.pos.clone(), bullet.color, bullet.wireColor, baddie.size * 0.5, 30, 10);
-        this.particles.push(particle);
-        this.main.add(particle);
-    }
-};
-
-GameObjectController.prototype.spawnLaserDieParticles = function (baddie, pos) {
-    var i;
-    var particle;
-
-    for (i = 0; i < 5; i++) {
         particle = new Particle(baddie.pos.clone(), baddie.color, baddie.wireColor, baddie.size, 60, 4);
         this.particles.push(particle);
         this.main.add(particle);
@@ -174,12 +79,8 @@ GameObjectController.prototype.spawnBaddie = function () {
     this.baddieSpawnCount++;
     if (this.baddieSpawnCount >= this.baddieSpawnRate) {
         this.baddieSpawnCount = 0;
-        var baddie;
-        if (Math.random() > 0.1) {
-            baddie = new Baddie();
-        } else {
-            baddie = new AttackBaddie();
-        }
+
+        var baddie = new Baddie(this.avatar);
 
         this.baddies.push(baddie);
         this.main.add(baddie);
@@ -197,28 +98,35 @@ GameObjectController.prototype.updateObjects = function (objects) {
     }
 };
 
-GameObjectController.prototype.fire = function () {
-    if (this.weapon == "gatling") this.fireGatling();
-    else if (this.weapon == "laser") this.fireLaser();
-};
 
-GameObjectController.prototype.fireGatling = function () {
-    this.gatlingFireCount++;
-    if (this.gatlingFireCount >= this.gatlingFireDelay) {
-        this.gatlingFireCount = 0;
+GameObjectController.prototype.checkInput = function () {
+    // check if keys are released.
+    if (this.input.a == false) this.a = false;
+    if (this.input.s == false) this.s = false;
+    if (this.input.d == false) this.d = false;
+    if (this.input.f == false) this.f = false;
+    if (this.input.g == false) this.g = false;
 
-        var bullet = new Bullet(this.avatar.pos.clone());
-        this.bullets.push(bullet);
-        this.main.add(bullet);
-
-        var particle = new Particle(this.avatar.pos.clone(), bullet.color, bullet.wireColor, 3, 20, 1);
-        this.particles.push(particle);
-        this.main.add(particle);
-
-        this.avatar.fire();
+    // only attack if key has been pressed this update.
+    if(this.input.a == true && this.a == false ){
+        this.a = true;
+        this.attack(0);
+    }
+    if(this.input.s == true && this.s == false ){
+        this.s = true;
+        this.attack(1);
+    }
+    if(this.input.d == true && this.d == false ){
+        this.d = true;
+        this.attack(2);
+    }
+    if(this.input.f == true && this.f == false ){
+        this.f = true;
+        this.attack(3);
+    }
+    if(this.input.g == true && this.g == false ){
+        this.g = true;
+        this.attack(4);
     }
 };
 
-GameObjectController.prototype.fireLaser = function () {
-    this.laser.fire = true;
-};

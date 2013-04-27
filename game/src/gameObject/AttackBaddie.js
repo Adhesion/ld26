@@ -2,6 +2,7 @@ function AttackBaddie() {
     this.size = 20;
     GameObject.call(this, new THREE.OctahedronGeometry(this.size, 1), 0xff05ae);
 
+    this.type = 1;
     this.pos.x = Math.random() * 600 - 300;
     this.pos.y = 1000;
     this.vel.x = Math.random() - 0.5;
@@ -11,6 +12,7 @@ function AttackBaddie() {
     this.fireDuration = this.fireDurationMax = this.fireRate * 3;
     this.gatlingFireCount = this.fireCountMax = 60;
     this.update();
+
 
     this.score = 100;
 }

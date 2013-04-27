@@ -12,7 +12,8 @@ function UIController(main) {
 
     this.infoDiv = document.createElement('div');
     this.infoDiv.setAttribute('class', 'info');
-    this.infoDiv.appendChild(document.createTextNode("[arrow keys] move, [space] fire, [s] select gatling, [a] select laser "));
+
+    this.infoDiv.appendChild(document.createTextNode( "them notes: a, s, d, f, g" ));
 
     document.body.appendChild(this.scoreDiv);
     document.body.appendChild(this.infoDiv);
@@ -30,6 +31,6 @@ UIController.prototype.update = function () {
         }
     }
 
-    this.scoreTxt.nodeValue = Math.round(this.displayScore);
+    this.scoreTxt.nodeValue = "" + Math.round(this.displayScore);
 };
  

@@ -3,6 +3,7 @@ function Avatar() {
 
     this.maxSpeed = 2;
     this.inputScale = 1;
+    this.pos.y = -70;
 }
 
 Avatar.prototype = new GameObject();
@@ -10,14 +11,6 @@ Avatar.prototype.constructor = Avatar;
 
 Avatar.prototype.update = function () {
     GameObject.prototype.update.call(this);
-    this.vel.x *= 0.75;
-    this.vel.y *= 0.75;
-    if (this.vel.length < 0.01) {
-        this.vel = new THREE.Vector3();
-    }
-
-    this.rotation.y = this.vel.x / 10;
-    this.rotation.z = -this.vel.x / 20;
 };
 
 Avatar.prototype.fire = function () {
@@ -39,9 +32,9 @@ Avatar.prototype.move = function (v) {
 Avatar.prototype.buildMesh = function () {
     var geometry = new THREE.Geometry();
 
-    var w = 5;
-    var h = 10;
-    var d = 2;
+    var w = 10;
+    var h = 20;
+    var d = 5;
 
     // right side
     geometry.vertices.push(new THREE.Vector3(w, -h * 0.25, -d));

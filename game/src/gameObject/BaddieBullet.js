@@ -1,4 +1,4 @@
-function BaddieBullet(pos) {
+ function BaddieBullet(pos) {
     GameObject.call(this, new THREE.CubeGeometry(5, 5, 5), 0x03ff68, 0x00ffff);
     this.wire.scale = new THREE.Vector3(1.25, 1.25, 1.25);
     this.pos = pos;
