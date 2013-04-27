@@ -123,7 +123,7 @@ GameObjectController.prototype.checkHits = function () {
 };
 
 GameObjectController.prototype.addScore = function (val) {
-    this.main.uiController.addScore(val);
+    this.main.state.uiController.addScore(val);
 };
 
 GameObjectController.prototype.checkBaddieFire = function () {
