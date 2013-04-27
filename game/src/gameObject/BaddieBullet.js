@@ -14,8 +14,8 @@
 BaddieBullet.prototype = new GameObject();
 BaddieBullet.prototype.constructor = BaddieBullet;
 
-BaddieBullet.prototype.update = function () {
-    GameObject.prototype.update.call(this);
+BaddieBullet.prototype.update = function (dt) {
+    GameObject.prototype.update.call(this, dt);
     this.wireMat.opacity = 0.5 + Math.random() * 0.5;
     if (this.pos.y < -200) this.alive = false;
     this.rotation.y += 0.1;

@@ -3,10 +3,13 @@ function GameObjectController(main) {
     this.input = new Input();
 
     this.avatar = new Avatar();
-    this.baddieSpawnRate = this.baddieSpawnCount = 100;
+    this.baddieSpawnRate = this.baddieSpawnCount = 1.0;
 
     this.particles = [];
     this.baddies = [];
+
+    this.nextChain = null;
+    this.chain = [];
 
     this.main.add(this.avatar);
 
@@ -16,11 +19,13 @@ function GameObjectController(main) {
 
 GameObjectController.prototype.update = function () {
     this.checkInput();
-    this.updateObjects(this.baddies);
-    this.updateObjects(this.particles);
-    this.avatar.update();
+    var dt = 1/60;
 
-    this.spawnBaddie();
+    this.updateObjects(this.baddies, dt);
+    this.updateObjects(this.particles, dt);
+    this.avatar.update(dt);
+
+    this.spawnBaddie(dt);
     this.checkHits();
 };
 
@@ -30,6 +35,10 @@ GameObjectController.prototype.checkHits = function () {
 
     for (var i = 0; i < this.baddies.length; i++) {
         d.sub(this.baddies[i].pos, this.avatar.pos);
+
+        if(d.length() <= this.avatar.range + this.baddies[i].size ){
+            this.baddies[i].slowed = true;
+        }
 
         if(d.length() <= this.baddies[i].size ){
             this.spawnDieParticles(this.baddies[i]);
@@ -41,47 +50,38 @@ GameObjectController.prototype.checkHits = function () {
 };
 
 
-GameObjectController.prototype.attack = function (type) {
-
-    for (var i = 0; i < this.baddies.length; i++) {
-        if(this.baddies[i].type == type && this.baddies[i].alive && this.baddies[i].active){
-            var d = new THREE.Vector3();
-            d.sub(this.baddies[i].pos, this.avatar.pos);
-
-            if(d.length() < this.avatar.range){
-                this.baddies[i].hit(1);
-                this.spawnDieParticles(this.baddies[i]);
-                //TODO: add some score
-                return;
-            }
-
-        }
-    }
-};
-
 GameObjectController.prototype.addScore = function (val) {
     this.main.state.uiController.addScore(val);
 };
 
-GameObjectController.prototype.spawnHitParticle = function (bullet) {
-    var particle = new Particle(bullet.pos.clone(), bullet.color, bullet.wireColor, bullet.size, 30, 4);
-    this.particles.push(particle);
-    this.main.add(particle);
-};
 
 GameObjectController.prototype.spawnDieParticles = function (baddie) {
     var i;
     var particle;
 
     for (i = 0; i < 10; i++) {
-        particle = new Particle(baddie.pos.clone(), baddie.color, baddie.wireColor, baddie.size, 60, 4);
+        particle = new Particle(baddie.pos.clone(), baddie.color, baddie.wireColor, baddie.size, 1.0, 200);
         this.particles.push(particle);
         this.main.add(particle);
     }
 };
 
-GameObjectController.prototype.spawnBaddie = function () {
-    this.baddieSpawnCount++;
+
+GameObjectController.prototype.spawnChainParticles = function (baddie) {
+    var i;
+    var particle;
+
+    for (i = 0; i < 5; i++) {
+        particle = new Particle(baddie.pos.clone(), 0x000000, baddie.wireColor, baddie.size, 1.0, 200);
+        this.particles.push(particle);
+        this.main.add(particle);
+    }
+};
+
+
+GameObjectController.prototype.spawnBaddie = function (dt) {
+    this.baddieSpawnCount += dt;
+
     if (this.baddieSpawnCount >= this.baddieSpawnRate) {
         this.baddieSpawnCount = 0;
 
@@ -90,7 +90,7 @@ GameObjectController.prototype.spawnBaddie = function () {
 
         var links = Math.round( Math.random() * 4);
 
-        pos = new THREE.Vector3(Math.random() * 400 - 200, 700);
+        pos = new THREE.Vector3(Math.random() * 400 - 200, 800);
         baddie = new Baddie(pos, this.avatar);
         this.baddies.push(baddie);
         this.main.add(baddie);
@@ -98,7 +98,7 @@ GameObjectController.prototype.spawnBaddie = function () {
 
         if( links > 2){
             for( var i=0; i<links-2; i++ ){
-                pos = new THREE.Vector3(pos.x + Math.random() * 100 - 50, pos.y + 100 + Math.random()* 100-50);
+                pos = new THREE.Vector3(pos.x + Math.random() * 100 - 50, pos.y + 50 + Math.random()* 50-25);
                 baddie = new Baddie(pos, this.avatar);
 
                 this.baddies[this.baddies.length-1].linkChild(baddie);
@@ -111,9 +111,11 @@ GameObjectController.prototype.spawnBaddie = function () {
     }
 };
 
-GameObjectController.prototype.updateObjects = function (objects) {
+
+GameObjectController.prototype.updateObjects = function (objects, dt) {
     for (var i = 0; i < objects.length; i++) {
-        objects[i].update();
+        objects[i].update(dt);
+
         if (!objects[i].alive) {
             this.main.remove(objects[i]);
             objects[i].dispose();
@@ -154,3 +156,54 @@ GameObjectController.prototype.checkInput = function () {
     }
 };
 
+GameObjectController.prototype.attack = function (type) {
+
+    if(this.nextChain != null){
+        //already in a chain, attack next one.
+        if( type == this.nextChain.type ){
+            this.hitBaddie(this.nextChain);
+            return;
+        }else{
+            // TODO: didn't hit anything.. penalize player.
+        }
+    }else{
+        // not in a chain, check if any bullets are in range.
+        for (var i = 0; i < this.baddies.length; i++) {
+            if(this.baddies[i].type == type && this.baddies[i].alive && this.baddies[i].active){
+                var d = new THREE.Vector3();
+                d.sub(this.baddies[i].pos, this.avatar.pos);
+
+                if(d.length() < this.avatar.range + this.baddies[i].size){
+                   this.hitBaddie(this.baddies[i]);
+                   return;
+                }
+            }
+        }
+
+        // TODO: didn't hit anything.. penalize player.
+    }
+};
+
+
+GameObjectController.prototype.hitBaddie = function (baddie) {
+    baddie.hit(1);
+    this.spawnDieParticles(baddie);
+
+    if(baddie.child != null){
+        this.nextChain = baddie.child;
+        this.chain.push(baddie);
+    }else{
+        this.nextChain = null;
+        this.breakChain();
+    }
+    //TODO: add some score
+};
+
+
+GameObjectController.prototype.breakChain = function () {
+    for( var i=0; i<this.chain.length; i++){
+        this.spawnChainParticles(this.chain[i]);
+        this.chain[i].alive = false;
+    }
+    this.chain = [];
+};

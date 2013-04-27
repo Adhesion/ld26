@@ -14,8 +14,8 @@ function Bullet(pos) {
 Bullet.prototype = new GameObject();
 Bullet.prototype.constructor = Bullet;
 
-Bullet.prototype.update = function () {
-    GameObject.prototype.update.call(this);
+Bullet.prototype.update = function (dt) {
+    GameObject.prototype.update.call(this, dt);
     this.wireMat.opacity = 0.5 + Math.random() * 0.5;
     if (this.pos.y > 500) this.alive = false;
 };

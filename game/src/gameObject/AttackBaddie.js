@@ -20,8 +20,8 @@ function AttackBaddie() {
 AttackBaddie.prototype = new GameObject();
 AttackBaddie.prototype.constructor = AttackBaddie;
 
-AttackBaddie.prototype.update = function () {
-    GameObject.prototype.update.call(this);
+AttackBaddie.prototype.update = function (dt) {
+    GameObject.prototype.update.call(this, dt);
     if (this.pos.y < -200) this.alive = false;
     this.rotation.x -= 0.025;
     this.rotation.y -= 0.025;

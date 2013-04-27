@@ -4,7 +4,7 @@ function Particle(pos, color, wireColor, size, life, speed) {
     this.pos = pos;
     this.rotation = new THREE.Vector3(Math.random() * 4 - 2, Math.random() * 4 - 2, Math.random() * 4 - 2);
 
-    this.update();
+    this.update(0);
     this.vel.x = Math.random() * speed - speed * 0.5;
     this.vel.y = Math.random() * speed - speed * 0.5;
     this.vel.z = Math.random() * speed - speed * 0.5;
@@ -16,9 +16,10 @@ function Particle(pos, color, wireColor, size, life, speed) {
 Particle.prototype = new GameObject();
 Particle.prototype.constructor = Particle;
 
-Particle.prototype.update = function () {
-    GameObject.prototype.update.call(this);
-    this.life--;
+Particle.prototype.update = function (dt) {
+    GameObject.prototype.update.call(this, dt);
+
+    this.life-=dt;
     if (this.life <= 0) {
         this.alive = false;
         return;
@@ -27,7 +28,7 @@ Particle.prototype.update = function () {
     this.solidMat.opacity = (this.life * 2) / this.maxLife;
     this.wireMat.opacity = (this.life * 2) / this.maxLife;
 
-    this.vel.y -= 0.1;
+    this.vel.y -= dt * 500;
 
     this.rotation.x += 0.1;
     this.rotation.y += 0.1;

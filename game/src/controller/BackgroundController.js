@@ -17,8 +17,9 @@ function BackgroundController(main) {
 BackgroundController.prototype.update = function () {
     //this.ground.update();
 
+    var dt = 1/60;
 
     for( var i=0; i<this.stars.length; i++){
-        this.stars[i].update();
+        this.stars[i].update(dt);
     }
 };

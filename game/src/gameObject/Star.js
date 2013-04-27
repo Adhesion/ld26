@@ -7,7 +7,7 @@ function Star() {
     this.resetPos();
 
     this.vel.x = 0;
-    this.vel.y = -20;
+    this.vel.y = -2000;
     this.update();
 
     this.solidMat.blending = THREE.AdditiveAlphaBlending;
@@ -16,8 +16,8 @@ function Star() {
 Star.prototype = new GameObject();
 Star.prototype.constructor = Star;
 
-Star.prototype.update = function () {
-    GameObject.prototype.update.call(this);
+Star.prototype.update = function (dt) {
+    GameObject.prototype.update.call(this, dt);
 
 
     if (this.pos.y < -2000) this.resetPos();

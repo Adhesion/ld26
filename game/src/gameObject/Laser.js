@@ -29,8 +29,8 @@ function Laser() {
 Laser.prototype = new GameObject();
 Laser.prototype.constructor = Laser;
 
-Laser.prototype.update = function () {
-    GameObject.prototype.update.call(this);
+Laser.prototype.update = function (dt) {
+    GameObject.prototype.update.call(this, dt);
 
     this.waveAngle += 0.5;
     this.wireMat.opacity = 0.5 + Math.random() * 0.5;

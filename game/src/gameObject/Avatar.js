@@ -5,7 +5,7 @@ function Avatar() {
     this.inputScale = 1;
     this.pos.y = -70;
 
-    this.range = 150;
+    this.range = 100;
 
     this.rangeMat = new THREE.LineBasicMaterial({ color: 0xffffff });
     var rangeGeom = new THREE.Geometry();
@@ -24,8 +24,8 @@ function Avatar() {
 Avatar.prototype = new GameObject();
 Avatar.prototype.constructor = Avatar;
 
-Avatar.prototype.update = function () {
-    GameObject.prototype.update.call(this);
+Avatar.prototype.update = function (dt) {
+    GameObject.prototype.update.call(this, dt);
 };
 
 Avatar.prototype.fire = function () {

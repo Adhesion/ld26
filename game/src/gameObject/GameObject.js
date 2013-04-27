@@ -26,12 +26,21 @@ function GameObject(geometry, color, wireColor) {
     this.hp = 1;
     this.size = 10;
     this.alive = true;
+    this.timeMult = 1;
 }
 
-GameObject.prototype.update = function () {
-    this.pos.x += this.vel.x;
-    this.pos.y += this.vel.y;
-    this.pos.z += this.vel.z;
+GameObject.prototype.update = function (dt) {
+
+    if(!dt) dt = 0;
+
+    this.pos.x += this.vel.x * dt * this.timeMult;
+    this.pos.y += this.vel.y * dt * this.timeMult;
+    this.pos.z += this.vel.z * dt * this.timeMult;
+
+
+   // this.pos.x += this.vel.x * dt;
+   // this.pos.y += this.vel.y;
+   // this.pos.z += this.vel.z;
 
     this.holder.position = this.pos;
 

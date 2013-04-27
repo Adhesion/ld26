@@ -1,13 +1,14 @@
 function Baddie(pos, target) {
 
     this.target = target;
-    this.type = Math.round(Math.random() * 0);
+    this.type = Math.round(Math.random() * 1);
 
-    this.size = 10 + Math.random() * 20;
+    this.size = 10 + Math.random() * 5;
     this.score = Math.round(this.size);
 
     this.child = null;
     this.active = true;
+    this.slowed = false;
 
     var color;
     switch(this.type){
@@ -40,7 +41,7 @@ function Baddie(pos, target) {
     this.pos = pos;
     this.hp = 1;
     this.fire = false;
-    this.speed = 2;
+    this.speed = 150;
     this.update();
 }
 
@@ -63,10 +64,16 @@ Baddie.prototype.enable = function () {
     this.solid.scale = new THREE.Vector3(1.0, 1.0, 1.0);
 };
 
-Baddie.prototype.update = function () {
+Baddie.prototype.update = function (dt) {
     this.seekTarget();
 
-    GameObject.prototype.update.call(this);
+    if(this.slowed){
+        this.timeMult = 0.5;
+    }else{
+        this.timeMult = 1.0;
+    }
+
+    GameObject.prototype.update.call(this, dt);
 
     if (this.pos.y < -200) this.alive = false;
     this.rotation.x += 0.025;
@@ -94,9 +101,11 @@ Baddie.prototype.update = function () {
 
 Baddie.prototype.hit = function (damage) {
     if (this.hp -damage <= 0){
-        if(this.child != null){
+        if(this.child != null && !this.child.active){
+            this.disable();
             this.child.enable();
-            this.child = null;
+            this.solidMat.opacity = 0;
+            return;
         }
     }
 
