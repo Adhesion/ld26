@@ -3,7 +3,7 @@ function GameObjectController(main) {
     this.input = new Input();
 
     this.avatar = new Avatar();
-    this.baddieSpawnRate = this.baddieSpawnCount = 50;
+    this.baddieSpawnRate = this.baddieSpawnCount = 100;
 
     this.particles = [];
     this.baddies = [];
@@ -30,26 +30,31 @@ GameObjectController.prototype.checkHits = function () {
 
     for (var i = 0; i < this.baddies.length; i++) {
         d.sub(this.baddies[i].pos, this.avatar.pos);
+
         if(d.length() <= this.baddies[i].size ){
             this.spawnDieParticles(this.baddies[i]);
-            this.baddies[i].alive = false;
+            this.baddies[i].hit(1);
 
-            //avatar take a hit.
+            //TODO: avatar take a hit.
         }
     }
 };
 
 
 GameObjectController.prototype.attack = function (type) {
-    var minY = 10000;
-    var attackIndex = -1;
 
     for (var i = 0; i < this.baddies.length; i++) {
-        if(this.baddies[i].type == type && this.baddies[i].pos.y < minY && this.baddies[i].alive){
-            minY = this.baddies[i].pos.y;
-            this.spawnDieParticles(this.baddies[i]);
-            this.baddies[i].alive = false;
-            return;
+        if(this.baddies[i].type == type && this.baddies[i].alive && this.baddies[i].active){
+            var d = new THREE.Vector3();
+            d.sub(this.baddies[i].pos, this.avatar.pos);
+
+            if(d.length() < this.avatar.range){
+                this.baddies[i].hit(1);
+                this.spawnDieParticles(this.baddies[i]);
+                //TODO: add some score
+                return;
+            }
+
         }
     }
 };
@@ -80,10 +85,29 @@ GameObjectController.prototype.spawnBaddie = function () {
     if (this.baddieSpawnCount >= this.baddieSpawnRate) {
         this.baddieSpawnCount = 0;
 
-        var baddie = new Baddie(this.avatar);
+        var pos;
+        var baddie;
 
+        var links = Math.round( Math.random() * 4);
+
+        pos = new THREE.Vector3(Math.random() * 400 - 200, 700);
+        baddie = new Baddie(pos, this.avatar);
         this.baddies.push(baddie);
         this.main.add(baddie);
+
+
+        if( links > 2){
+            for( var i=0; i<links-2; i++ ){
+                pos = new THREE.Vector3(pos.x + Math.random() * 100 - 50, pos.y + 100 + Math.random()* 100-50);
+                baddie = new Baddie(pos, this.avatar);
+
+                this.baddies[this.baddies.length-1].linkChild(baddie);
+
+                this.baddies.push(baddie);
+                this.main.add(baddie);
+            }
+        }
+
     }
 };
 

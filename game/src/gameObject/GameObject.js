@@ -34,7 +34,9 @@ GameObject.prototype.update = function () {
     this.pos.z += this.vel.z;
 
     this.holder.position = this.pos;
-    this.holder.rotation = this.rotation;
+
+    this.solid.rotation = this.rotation;
+    this.wire.rotation = this.rotation;
 
     if (this.hitCount > 0) {
         this.hitCount--;
@@ -56,9 +58,10 @@ GameObject.prototype.hit = function (damage) {
     if (this.hp <= 0) {
         this.hp = 0;
         this.alive = false;
+    }else{
+        this.pos.x += Math.random()*4-2;
+        this.pos.y += Math.random()*4-2;
     }
-    this.pos.x += Math.random()*4-2;
-    this.pos.y += Math.random()*4-2;
 };
 
 GameObject.prototype.dispose = function () {
