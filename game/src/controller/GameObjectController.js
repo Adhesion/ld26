@@ -180,7 +180,7 @@ GameObjectController.prototype.attack = function (type) {
     if(this.nextChain != null){
         //already in a chain, attack next one.
         if( type == this.nextChain.type ){
-            this.hitBaddie(this.nextChain);
+            this.hitBaddie(this.nextChain, true);
             return;
         }else{
             this.breakChain();
@@ -204,28 +204,41 @@ GameObjectController.prototype.attack = function (type) {
     }
 };
 
-GameObjectController.prototype.hitBaddie = function (baddie) {
-    baddie.hit(1);
+GameObjectController.prototype.hitBaddie = function (baddie, chain) {
+    baddie.hit(1, chain);
     this.spawnDieParticles(baddie);
 
-    if(baddie.child != null){
+    // enemy in chain, has child
+    if(baddie.child != null) {
+        // ... but we have to preemptively break chain if it's the boss
         if(baddie.child == this.boss){
             baddie.child = null;
-            baddie.alive = false;
             this.nextChain = null;
+            this.chain.push(baddie);
             this.breakChain();
             //TODO: attack boss, spawn particles n shit.
 
             this.spawnBossHitParticles();
+            window.hitSounds[baddie.note].play();
+            // TODO boss hit sound?
 
             console.log("boss has been hit");
-        }else{
+        }
+        else {
             this.nextChain = baddie.child;
             this.chain.push(baddie);
+            window.hitSounds[baddie.note].play();
         }
-    }else{
+    // last enemy in the chain
+    } else if (chain) {
         this.nextChain = null;
+        this.chain.push(baddie);
         this.breakChain();
+        window.hitSounds[baddie.note].play();
+    }
+    // single enemy, no chain
+    else {
+        window.hitSounds[baddie.note].play();
     }
 
     //TODO: add some score
@@ -233,8 +246,7 @@ GameObjectController.prototype.hitBaddie = function (baddie) {
 
 GameObjectController.prototype.breakChain = function () {
     for( var i=0; i<this.chain.length; i++){
-        this.spawnChainParticles(this.chain[i]);
-        this.chain[i].alive = false;
+        this.chain[i].deathTimer = 18 + i*8;
     }
     this.chain = [];
 };

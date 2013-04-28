@@ -1,12 +1,9 @@
 function Baddie(pos, size, note) {
     //
     this.target = new GameObject();
-    console.log( "note is " + note);
     this.note = note;
     this.type = note % 5;
     this.shape = Math.floor(note / 5);
-    console.log( "type is " + this.type);
-    console.log( "shape is " + this.shape);
 
     this.size = size;
     this.score = Math.round(this.size);
@@ -14,6 +11,8 @@ function Baddie(pos, size, note) {
     this.child = null;
     this.active = true;
     this.slowed = false;
+
+    this.deathTimer = -1;
 
     var color;
     switch(this.type){
@@ -86,10 +85,22 @@ Baddie.prototype.enable = function () {
 Baddie.prototype.update = function (dt) {
     this.seekTarget();
 
-    if(this.slowed){
+    if( this.deathTimer > -1 ) {
+        this.timeMult = 0.075;
+        this.deathTimer--;
+    }
+    else if(this.slowed){
         this.timeMult = 0.5;
     }else{
         this.timeMult = 1.0;
+    }
+
+    // deathtimer case is for delayed death - enemies in chains
+    if( this.deathTimer == 0 ) {
+        this.alive = false;
+        window.hitSounds[this.note].play();
+        window.main.state.goController.spawnChainParticles(this);
+        console.log( "delayed death" );
     }
 
     GameObject.prototype.update.call(this, dt);
@@ -117,15 +128,17 @@ Baddie.prototype.update = function (dt) {
     }
 };
 
-Baddie.prototype.hit = function (damage) {
-    window.hitSounds[this.note].play();
-
+Baddie.prototype.hit = function (damage, chain) {
     if (this.hp -damage <= 0){
         if(this.child != null && !this.child.active){
             this.disable();
             this.child.enable();
             this.solidMat.opacity = 0;
-            console.log( "playing note " + this.note );
+            return;
+        }
+        else if( chain && this.child == null ) {
+            this.disable();
+            this.solidMat.opacity = 0;
             return;
         }
     }

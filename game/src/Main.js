@@ -83,6 +83,7 @@ function Main() {
 	document.body.appendChild(this.container);
 	window.onresize = this.resize.bind( this );
 
+    window.main = this;
 
 	this.loader = new Loader();
 	this.loader.load( this.getAssets() );
