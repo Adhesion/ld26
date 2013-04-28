@@ -259,28 +259,28 @@ GameObjectController.prototype.hitBaddie = function (baddie, chain) {
             //TODO: attack boss, spawn particles n shit.
 
             this.spawnBossHitParticles();
-            window.hitSounds[baddie.note].play();
+            this.main.loader.get( "sound/hit" + baddie.note ).play();
             // TODO boss hit sound?
             // probably should just call boss.hit()?
             console.log("boss has been hit");
-            this.main.loader.get( "sound/bosshit").play(); // temp
+            this.main.loader.get( "sound/bosshit" ).play(); // temp
         }
         // regular enemy in chain
         else {
             this.nextChain = baddie.child;
             this.chain.push(baddie);
-            window.hitSounds[baddie.note].play();
+            this.main.loader.get( "sound/hit" + baddie.note ).play();
         }
     // last enemy in the chain
     } else if (chain) {
         this.nextChain = null;
         this.chain.push(baddie);
         this.breakChain();
-        window.hitSounds[baddie.note].play();
+        this.main.loader.get( "sound/hit" + baddie.note ).play();
     }
     // single enemy, no chain
     else {
-        window.hitSounds[baddie.note].play();
+        this.main.loader.get( "sound/hit" + baddie.note ).play();
     }
 
     //TODO: add some score
