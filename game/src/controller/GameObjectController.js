@@ -102,7 +102,7 @@ GameObjectController.prototype.spawnBossHitParticles = function () {
     for (i = 0; i < 50; i++) {
         particle = new Particle(this.boss.pos.clone(), this.boss.color, this.boss.wireColor, this.boss.size, 3.0, 1000);
         this.particles.push(particle);
-        this.main.add(particle);
+        this.main.state.scene.add(particle.holder);
     }
 };
 
@@ -272,7 +272,7 @@ GameObjectController.prototype.defaultCamera = function (time) {
 
 GameObjectController.prototype.bossAppear = function (pos) {
     this.boss.appear(pos);
-    this.main.add(this.boss);
+    this.main.state.scene.add(this.boss.holder);
 };
 
 GameObjectController.prototype.bossMove = function (pos) {
@@ -281,5 +281,5 @@ GameObjectController.prototype.bossMove = function (pos) {
 
 GameObjectController.prototype.bossHide = function () {
     //TODO: spawn some particles n shit because that mofo' 'spacejumped'
-    this.main.remove(this.boss);
+    this.main.state.scene.remove(this.boss.holder);
 };
