@@ -100,7 +100,7 @@ Baddie.prototype.update = function (dt) {
 
         if(this.child.alive){
             var dv = new THREE.Vector3();
-            dv.sub(this.child.pos, this.pos);
+            dv.subVectors(this.child.pos, this.pos);
 
 
             var linkGeom = new THREE.Geometry();
@@ -131,7 +131,7 @@ Baddie.prototype.seekTarget = function () {
    if(this.target == null )return;
 
     var dv = new THREE.Vector3();
-   dv.sub(this.target.pos, this.pos);
+   dv.subVectors(this.target.pos, this.pos);
    dv.setLength(this.speed);
 
    this.vel = dv;

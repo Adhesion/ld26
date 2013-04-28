@@ -2,6 +2,9 @@ function GameObjectController(main) {
     this.main = main;
     this.input = new Input();
 
+    this.camera = this.main.camera;
+    this.camera.up = new THREE.Vector3( 0, 0, 1 );
+    this.cameraTarget = new THREE.Vector3();
     this.level = new Level(this);
 
     this.avatar = new Avatar();
@@ -29,6 +32,8 @@ GameObjectController.prototype.update = function () {
     this.updateObjects(this.particles, dt);
     this.avatar.update(dt);
 
+    this.camera.lookAt(this.cameraTarget);
+
     //this.spawnBaddie(dt);
     this.checkHits();
 };
@@ -38,7 +43,7 @@ GameObjectController.prototype.checkHits = function () {
     var d = new THREE.Vector3();
 
     for (var i = 0; i < this.baddies.length; i++) {
-        d.sub(this.baddies[i].pos, this.avatar.pos);
+        d.subVectors(this.baddies[i].pos, this.avatar.pos);
 
         if(d.length() <= this.avatar.range + this.baddies[i].size ){
             this.baddies[i].slowed = true;
@@ -158,7 +163,7 @@ GameObjectController.prototype.attack = function (type) {
         for (var i = 0; i < this.baddies.length; i++) {
             if(this.baddies[i].type == type && this.baddies[i].alive && this.baddies[i].active){
                 var d = new THREE.Vector3();
-                d.sub(this.baddies[i].pos, this.avatar.pos);
+                d.subVectors(this.baddies[i].pos, this.avatar.pos);
 
                 if(d.length() < this.avatar.range + this.baddies[i].size){
                    this.hitBaddie(this.baddies[i]);
@@ -185,11 +190,24 @@ GameObjectController.prototype.hitBaddie = function (baddie) {
     //TODO: add some score
 };
 
-
 GameObjectController.prototype.breakChain = function () {
     for( var i=0; i<this.chain.length; i++){
         this.spawnChainParticles(this.chain[i]);
         this.chain[i].alive = false;
     }
     this.chain = [];
+};
+
+GameObjectController.prototype.moveCamera = function (pos, target) {
+    this.camera.position = pos;
+    this.cameraTarget = target;
+    this.camera.lookAt(this.cameraTarget);
+};
+
+GameObjectController.prototype.defaultCamera = function () {
+    this.camera.position.x = 0;
+    this.camera.position.y = -200;
+    this.camera.position.z = 200;
+    this.cameraTarget = new THREE.Vector3();
+    this.camera.lookAt(this.cameraTarget);
 };
