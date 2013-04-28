@@ -65,6 +65,23 @@ function Main() {
 	document.body.appendChild(this.container);
 	window.onresize = this.resize.bind( this );
 
+    // hacky sound shit
+    window.song = new Howl({
+        urls: ['sound/ld26.mp3', 'sound/ld26.ogg'],
+        volume: 0.9,
+        buffer: true
+    }).play();
+
+    window.hitSounds = [];
+
+    for( var i = 0; i < 15; i++ ) {
+        window.hitSounds.push(new Howl({
+            urls: ['sound/hit' + i + '.mp3', 'sound/hit' + i + '.ogg'],
+            volume: 0.3
+        }));
+        console.log('hit' + i + '.mp3');
+    }
+
 	this.loader = new Loader();
 	this.loader.load( this.getAssets() );
 	this.tryToStart();
