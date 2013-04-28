@@ -10,19 +10,49 @@ window.requestAnimFrame = (function(){
 	};
 })();
 
+function Loader() {
+	this.assets = {};
+};
+
+Loader.prototype.load = function( assets ) {
+	var self = this;
+	for( var i = 0; i < assets.length; i ++ ) {
+		var asset = assets[i];
+		var image = THREE.ImageUtils.loadTexture(
+			asset.name,
+			undefined,
+			function( image ) {
+				self.assets[image.name] = image;
+			},
+			function( error ) {
+				console.error( error );
+			}
+		);
+		image.name = asset.name;
+	}
+};
+
+Loader.prototype.done = function( assets ) {
+	for( var asset in assets ) {
+		if( ! this.assets[assets[asset].name] ) {
+			return false;
+		}
+	}
+	return true;
+};
+
+Loader.prototype.get = function( name ) {
+	var value = this.assets[name];
+	if( ! value ) {
+		throw "Unknown asset " + name;
+	}
+	return value;
+};
+
+
 /** The main game object. Houses renderer, gamestate, etc. */
 function Main() {
 	this.scene = new THREE.Scene();
-	this.camera = new THREE.PerspectiveCamera(
-		60,
-		window.innerWidth / window.innerHeight,
-		1,
-		10000
-	);
-	this.camera.position.y = -200;
-	this.camera.position.z = 200;
-	this.camera.lookAt(new THREE.Vector3());
-	this.scene.add(this.camera);
 	this.renderer = new THREE.WebGLRenderer({
 		antialias: true
 	});
@@ -35,6 +65,18 @@ function Main() {
 	document.body.appendChild(this.container);
 	window.onresize = this.resize.bind( this );
 
+	this.loader = new Loader();
+	this.loader.load( this.getAssets() );
+	this.tryToStart();
+}
+
+Main.prototype.tryToStart = function() {
+
+	if( ! this.loader.done( this.getAssets() ) ) {
+		setTimeout( this.tryToStart.bind( this ), 50 );
+		return;
+	}
+
 	// start the shit
 	this.lastFrame = Date.now();
 	this.setState( new Intro() );
@@ -42,9 +84,22 @@ function Main() {
 	this.update();
 };
 
+Main.prototype.getAssets = function() {
+	return [
+		{ name: 'assets/intro/intro_bg.png', type: 'img', },
+		{ name: 'assets/intro/intro_glasses1.png', type: 'img' },
+		{ name: 'assets/intro/intro_glasses2.png', type: 'img' },
+		{ name: 'assets/intro/intro_glasses3.png', type: 'img' },
+		{ name: 'assets/intro/intro_glasses4.png', type: 'img' },
+		{ name: 'assets/intro/intro_radmars1.png', type: 'img' },
+		{ name: 'assets/intro/intro_radmars2.png', type: 'img' },
+		{ name: 'assets/intro/intro_mars.png', type: 'img' }
+	];
+};
+
 Main.prototype.setState = function( state ) {
 	if( this.state ) {
-		this.state.onStop();
+		this.state.onStop( this );
 	}
 	this.state = state;
 	this.state.onStart( this );
@@ -53,8 +108,9 @@ Main.prototype.setState = function( state ) {
 Main.prototype.resize = function (event) {
 	var width = window.innerWidth;
 	var height = window.innerHeight;
-	this.camera.aspect = width / height;
-	this.camera.updateProjectionMatrix();
+	if( this.state.resize ) {
+		this.state.resize( width, height );
+	}
 	this.renderer.setSize(width, height);
 };
 
@@ -89,8 +145,25 @@ Main.prototype.remove = function (obj) {
 function GameState() {
 };
 
+GameState.prototype.resize = function( width, height ) {
+	this.game.camera.aspect = width / height;
+	this.game.camera.updateProjectionMatrix();
+}
+
 GameState.prototype.onStart = function( game ) {
 	console.log( "Starting game state!" );
+	this.game = game;
+	game.camera = new THREE.PerspectiveCamera(
+		60,
+		window.innerWidth / window.innerHeight,
+		1,
+		10000
+	);
+	game.camera.position.y = -200;
+	game.camera.position.z = 200;
+	game.camera.lookAt(new THREE.Vector3());
+	game.scene.add(this.camera);
+
 	this.bgController = new BackgroundController(game);
 	this.goController = new GameObjectController(game);
 	this.uiController = new UIController(game);
@@ -110,11 +183,138 @@ function Intro() {
 }
 
 Intro.prototype.onStart = function( game ) {
+	this.game = game;
+	this.game.camera = new THREE.OrthographicCamera(
+		0,
+		window.innerWidth,
+		0,
+		window.innerHeight
+	);
+	this.controller = new IntroController( game );
+	game.controllers.push( this.controller );
 	console.log( "Starting intro... ?" );
-	game.setState( new GameState() );
 };
 
+Intro.prototype.reisze = function( width, height ) {
+	this.game.camera.right = width;
+	this.game.camera.height = height;
+	this.game.camera.updateProjectionMatrix();
+}
+
 Intro.prototype.onStop = function( game) {
+	this.controller.onStop();
 	console.log( "Stopping intro... ?" );
+	game.controllers = [];
 };
+
+function IntroController( game ) {
+
+	this.game = game;
+	var glassesFiles = [
+		'assets/intro/intro_glasses1.png',
+		'assets/intro/intro_glasses2.png',
+		'assets/intro/intro_glasses3.png',
+		'assets/intro/intro_glasses4.png'
+	];
+
+	var textFiles = [
+		'assets/intro/intro_mars.png',
+		'assets/intro/intro_radmars1.png',
+		'assets/intro/intro_radmars2.png',
+	];
+
+	this.textMaterials = textFiles.map(function( file ) {
+		return new THREE.SpriteMaterial({
+			map: game.loader.get( file ),
+			useScreenCoordinates: true,
+			alignment: THREE.SpriteAlignment.topLeft
+		});
+	});
+
+	this.glassesMaterials = glassesFiles.map(function( file ) {
+		return new THREE.SpriteMaterial({
+			map: game.loader.get( file ),
+			useScreenCoordinates: true,
+			alignment: THREE.SpriteAlignment.topLeft
+		});
+	});
+
+	this.textSpriteIndex = 0;
+
+	this.textSprite = new THREE.Sprite(
+		this.textMaterials[ this.textSpriteIndex ]
+	);
+	this.textSprite.position.set( 346, 377, 0 );
+	this.textSprite.scale.set( 108, 28, 1 );
+
+	this.glassesSpriteIndex = 0;
+	this.glassesSprite = new THREE.Sprite(
+		this.glassesMaterials[ this.glassesSpriteIndex ]
+	);
+	this.glassesSprite.position.set( 0, 0, 0 );
+	this.glassesSprite.scale.set( 144, 24, 1 );
+
+	var bgMaterial = new THREE.SpriteMaterial({
+		map: this.game.loader.get( "assets/intro/intro_bg.png" ),
+		useScreenCoordinates: true,
+		alignment: THREE.SpriteAlignment.topLeft
+	});
+
+	this.bgSprite = new THREE.Sprite( bgMaterial );
+	this.bgSprite.position.set( 0, 0, 0 );
+	this.bgSprite.scale.set( 800, 600, 1 );
+	this.counter = 0;
+
+	document.onkeypress = function( e ) {
+		if( e.keyCode == 13 ) {
+			game.setState( new GameState() );
+		}
+	};
+
+	this.game.scene.add( this.bgSprite );
+	this.game.scene.add( this.textSprite );
+	this.game.scene.add( this.glassesSprite );
+}
+
+IntroController.prototype.onStop = function() {
+	this.game.scene.remove( this.glassesSprite );
+	this.game.scene.remove( this.bgSprite );
+	this.game.scene.remove( this.textSprite );
+}
+
+IntroController.prototype.update = function( dt ) {
+	this.counter += dt;
+	if( this.counter < 2000)
+		this.textSprite.material = this.textMaterials[ this.textSpriteIndex = 0 ];
+	else if( this.counter < 2050) {
+		this.textSprite.position.set( 306, 377, 0 );
+		this.textSprite.scale.set( 192, 28, 1 );
+		this.textSprite.material = this.textMaterials[ this.textSpriteIndex = 1 ];
+	}
+	else if( this.counter < 2600)
+		this.textSprite.material = this.textMaterials[ this.textSpriteIndex = 2 ];
+	else if( this.counter < 2650)
+		this.textSprite.material = this.textMaterials[ this.textSpriteIndex = 1 ];
+	else if( this.counter < 2700)
+		this.textSprite.material = this.textMaterials[ this.textSpriteIndex = 2 ];
+	else if( this.counter < 2750)
+		this.textSprite.material = this.textMaterials[ this.textSpriteIndex = 1 ];
+	else if( this.counter < 2800)
+		this.textSprite.material = this.textMaterials[ this.textSpriteIndex = 2 ];
+	else if( this.counter < 2850)
+		this.textSprite.material = this.textMaterials[ this.textSpriteIndex = 1 ];
+	else
+		this.textSprite.material = this.textMaterials[ this.textSpriteIndex = 2 ];
+
+	if( this.counter < 2000)
+		this.glassesSprite.position.set( 249+80,  289 * (this.counter/2000.0), 0 );
+	else if( this.counter < 2150 )
+		this.glassesSprite.material = this.glassesMaterials[ this.glassesSpriteIndex = 1 ];
+	else if( this.counter < 2300 )
+		this.glassesSprite.material = this.glassesMaterials[ this.glassesSpriteIndex = 2 ];
+	else if( this.counter < 2550 )
+		this.glassesSprite.material = this.glassesMaterials[ this.glassesSpriteIndex = 3 ];
+	else
+		this.glassesSprite.material = this.glassesMaterials[ this.glassesSpriteIndex = 0 ];
+}
 
