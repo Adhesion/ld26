@@ -1,8 +1,12 @@
-function Baddie(pos, size, type, shape) {
+function Baddie(pos, size, note) {
     //
     this.target = new GameObject();
-    this.type = type;
-    this.shape = shape;
+    console.log( "note is " + note);
+    this.note = note;
+    this.type = note % 5;
+    this.shape = Math.floor(note / 5);
+    console.log( "type is " + this.type);
+    console.log( "shape is " + this.shape);
 
     this.size = size;
     this.score = Math.round(this.size);
@@ -115,15 +119,19 @@ Baddie.prototype.update = function (dt) {
 };
 
 Baddie.prototype.hit = function (damage) {
+    window.hitSounds[this.note].play();
+
     if (this.hp -damage <= 0){
         if(this.child != null && !this.child.active){
             this.disable();
             this.child.enable();
             this.solidMat.opacity = 0;
+            console.log( "playing note " + this.note );
             return;
         }
     }
 
+    // buh? this might never get called
     GameObject.prototype.hit.call(this, damage);
 };
 
