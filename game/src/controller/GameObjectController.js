@@ -23,7 +23,7 @@ function GameObjectController(main) {
     // have any of these keys been pressed this update cycle?
     this.z = this.x = this.c = this.v = this.b = false;
 
-    Howler.mute();
+    //Howler.mute();
 }
 
 GameObjectController.prototype.update = function () {
