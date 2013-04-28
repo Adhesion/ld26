@@ -1,5 +1,4 @@
-function BackgroundController(main) {
-    this.main = main;
+function BackgroundController(scene) {
     this.ground = new GroundPlane();
 
     this.stars = [];
@@ -8,15 +7,11 @@ function BackgroundController(main) {
         var star = new Star();
 
         this.stars.push(star);
-        this.main.add(star);
+        scene.add(star.holder);
     }
-
-    //this.main.scene.add(this.ground.wire);
 }
 
 BackgroundController.prototype.update = function () {
-    //this.ground.update();
-
     var dt = 1/60;
 
     for( var i=0; i<this.stars.length; i++){
