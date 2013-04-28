@@ -19,7 +19,7 @@ Level.prototype.update = function(dt) {
 
 Level.prototype.build = function() {
     this.chunks = [
-        new IntroChunk(this)
+        new BossChunk1(this)
     ];
 };
 

@@ -16,6 +16,7 @@ function Loader() {
 
 Loader.prototype.load = function( assets ) {
 	var self = this;
+    var modelLoader = new THREE.JSONLoader();
 	for( var i = 0; i < assets.length; i ++ ) {
 		var asset = assets[i];
 		if( asset.type == 'img' ) {
@@ -46,6 +47,16 @@ Loader.prototype.load = function( assets ) {
 			audio = new Howl( settings );
 			audio.hack_asset_name = asset.name;
 			audio.hack_callback = asset.callback;
+		}
+		else if( asset.type == 'model' ) {
+			var hackName = asset.name;
+			console.log( "model namey hackey bullshit 1: " + hackName );
+			modelLoader.load( hackName,
+				function(geo) {
+					console.log( "model namey hackey bullshit 2: " + hackName );
+					self.assets[hackName] = geo;
+				}
+			);
 		}
 	}
 };
@@ -83,6 +94,7 @@ function Main() {
 	document.body.appendChild(this.container);
 	window.onresize = this.resize.bind( this );
 
+	window.main = this;
 	this.loader = new Loader();
 	this.loader.load( this.getAssets() );
 	this.tryToStart();
@@ -145,7 +157,8 @@ Main.prototype.getAssets = function() {
 		{ name: 'assets/intro/intro_glasses4.png', type: 'img' },
 		{ name: 'assets/intro/intro_radmars1.png', type: 'img' },
 		{ name: 'assets/intro/intro_radmars2.png', type: 'img' },
-		{ name: 'assets/intro/intro_mars.png', type: 'img' }
+		{ name: 'assets/intro/intro_mars.png', type: 'img' },
+		{ name: 'assets/models/pyramid.js', type: 'model' }
 	];
 };
 
@@ -189,6 +202,7 @@ Main.prototype.update = function () {
 };
 
 function GameState() {
+
 };
 
 GameState.prototype.resize = function( width, height ) {
