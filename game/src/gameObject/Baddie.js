@@ -1,9 +1,9 @@
-function Baddie(pos, target) {
+function Baddie(pos, type, size) {
+    //
+    this.target = new GameObject();
+    this.type = type;
 
-    this.target = target;
-    this.type = Math.round(Math.random() * 1);
-
-    this.size = 10 + Math.random() * 5;
+    this.size = size;
     this.score = Math.round(this.size);
 
     this.child = null;
@@ -42,7 +42,8 @@ function Baddie(pos, target) {
     this.hp = 1;
     this.fire = false;
     this.speed = 150;
-    this.update();
+
+    this.update(0);
 }
 
 Baddie.prototype = new GameObject();
@@ -113,7 +114,9 @@ Baddie.prototype.hit = function (damage) {
 };
 
 Baddie.prototype.seekTarget = function () {
-   var dv = new THREE.Vector3();
+   if(this.target == null )return;
+
+    var dv = new THREE.Vector3();
    dv.sub(this.target.pos, this.pos);
    dv.setLength(this.speed);
 

@@ -37,11 +37,6 @@ GameObject.prototype.update = function (dt) {
     this.pos.y += this.vel.y * dt * this.timeMult;
     this.pos.z += this.vel.z * dt * this.timeMult;
 
-
-   // this.pos.x += this.vel.x * dt;
-   // this.pos.y += this.vel.y;
-   // this.pos.z += this.vel.z;
-
     this.holder.position = this.pos;
 
     this.solid.rotation = this.rotation;

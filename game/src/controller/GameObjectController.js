@@ -2,6 +2,8 @@ function GameObjectController(main) {
     this.main = main;
     this.input = new Input();
 
+    this.level = new Level(this);
+
     this.avatar = new Avatar();
     this.baddieSpawnRate = this.baddieSpawnCount = 1.0;
 
@@ -21,11 +23,13 @@ GameObjectController.prototype.update = function () {
     this.checkInput();
     var dt = 1/60;
 
+    this.level.update(dt);
+
     this.updateObjects(this.baddies, dt);
     this.updateObjects(this.particles, dt);
     this.avatar.update(dt);
 
-    this.spawnBaddie(dt);
+    //this.spawnBaddie(dt);
     this.checkHits();
 };
 
@@ -78,39 +82,23 @@ GameObjectController.prototype.spawnChainParticles = function (baddie) {
     }
 };
 
+GameObjectController.prototype.makeBaddie = function (baddie) {
+    baddie.target = this.avatar;
+    this.baddies.push(baddie);
+    this.main.add(baddie);
+}
 
-GameObjectController.prototype.spawnBaddie = function (dt) {
-    this.baddieSpawnCount += dt;
-
-    if (this.baddieSpawnCount >= this.baddieSpawnRate) {
-        this.baddieSpawnCount = 0;
-
-        var pos;
-        var baddie;
-
-        var links = Math.round( Math.random() * 4);
-
-        pos = new THREE.Vector3(Math.random() * 400 - 200, 800);
-        baddie = new Baddie(pos, this.avatar);
-        this.baddies.push(baddie);
-        this.main.add(baddie);
-
-
-        if( links > 2){
-            for( var i=0; i<links-2; i++ ){
-                pos = new THREE.Vector3(pos.x + Math.random() * 100 - 50, pos.y + 50 + Math.random()* 50-25);
-                baddie = new Baddie(pos, this.avatar);
-
-                this.baddies[this.baddies.length-1].linkChild(baddie);
-
-                this.baddies.push(baddie);
-                this.main.add(baddie);
-            }
+GameObjectController.prototype.makeLinkedBaddies = function (baddies) {
+    for(var i=0; i<baddies.length; i++){
+        if(i > 0){
+            baddies[i-1].linkChild(baddies[i]);
         }
 
+        baddies[i].target = this.avatar;
+        this.baddies.push(baddies[i]);
+        this.main.add(baddies[i]);
     }
 };
-
 
 GameObjectController.prototype.updateObjects = function (objects, dt) {
     for (var i = 0; i < objects.length; i++) {
@@ -123,7 +111,6 @@ GameObjectController.prototype.updateObjects = function (objects, dt) {
         }
     }
 };
-
 
 GameObjectController.prototype.checkInput = function () {
     // check if keys are released.
