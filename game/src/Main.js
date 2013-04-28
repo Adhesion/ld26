@@ -70,7 +70,6 @@ Loader.prototype.get = function( name ) {
 
 /** The main game object. Houses renderer, gamestate, etc. */
 function Main() {
-	this.scene = new THREE.Scene();
 	this.renderer = new THREE.WebGLRenderer({
 		antialias: true
 	});
@@ -80,9 +79,9 @@ function Main() {
 	this.container = document.createElement('div');
 	this.container.setAttribute('class', 'game');
 	this.container.appendChild(this.renderer.domElement);
+	this.operations = [];
 	document.body.appendChild(this.container);
 	window.onresize = this.resize.bind( this );
-
 
 	this.loader = new Loader();
 	this.loader.load( this.getAssets() );
@@ -138,6 +137,7 @@ Main.prototype.getAssets = function() {
 		hitAsset( 12 ),
 		hitAsset( 13 ),
 		hitAsset( 14 ),
+		{ name: 'assets/gameover/gameover.png', type: 'img', },
 		{ name: 'assets/intro/intro_bg.png', type: 'img', },
 		{ name: 'assets/intro/intro_glasses1.png', type: 'img' },
 		{ name: 'assets/intro/intro_glasses2.png', type: 'img' },
@@ -167,6 +167,12 @@ Main.prototype.resize = function (event) {
 };
 
 Main.prototype.update = function () {
+	var op;
+	while( op = this.operations.pop() ) {
+		console.log( "Running operation" );
+		op(this);
+	}
+
 	var delta = Date.now() - this.lastFrame;
 
 	//update everything then render.
@@ -174,7 +180,7 @@ Main.prototype.update = function () {
 		this.controllers[controller].update( delta );
 	}
 
-	this.render();
+	this.state.render( this );
 
 	this.lastFrame = Date.now();
 
@@ -182,43 +188,33 @@ Main.prototype.update = function () {
 	requestAnimFrame( this.callback );
 };
 
-Main.prototype.render = function () {
-	this.renderer.render(this.scene, this.camera);
-};
-
-Main.prototype.add = function (obj) {
-	this.scene.add(obj.holder);
-};
-
-Main.prototype.remove = function (obj) {
-	this.scene.remove(obj.holder);
-};
-
 function GameState() {
 };
 
 GameState.prototype.resize = function( width, height ) {
-	this.game.camera.aspect = width / height;
-	this.game.camera.updateProjectionMatrix();
+	this.camera.aspect = width / height;
+	this.camera.updateProjectionMatrix();
+	this.uiController.resize( width, height );
 }
 
 GameState.prototype.onStart = function( game ) {
 	this.game = game;
 
+	this.scene = new THREE.Scene();
 	game.loader.get("sound/ld26").play();
+	game.renderer.autoClear = false;
 
-	game.camera = new THREE.PerspectiveCamera(
+	this.camera = new THREE.PerspectiveCamera(
 		60,
 		window.innerWidth / window.innerHeight,
 		1,
 		10000
 	);
-	game.camera.position.y = -200;
-	game.camera.position.z = 200;
-	game.camera.lookAt(new THREE.Vector3());
-	game.scene.add(this.camera);
+	this.camera.position.y = -200;
+	this.camera.position.z = 200;
+	this.camera.lookAt(new THREE.Vector3());
 
-	this.bgController = new BackgroundController(game);
+	this.bgController = new BackgroundController(this.scene);
 	this.goController = new GameObjectController(game);
 	this.uiController = new UIController(game);
 
@@ -230,38 +226,55 @@ GameState.prototype.onStart = function( game ) {
 }
 
 GameState.prototype.onStop = function( game ) {
+	game.loader.get("sound/ld26").stop();
+	game.controllers = [];
+	game.renderer.autoClear = true;
+}
+
+GameState.prototype.render = function( game ) {
+	game.renderer.clear();
+	game.renderer.render( this.scene, this.camera );
+	if( this.uiController ) {
+		game.renderer.render( this.uiController.scene, this.uiController.camera );
+	}
 }
 
 function Intro() {
 }
 
+Intro.prototype.render = function( game ) {
+	game.renderer.render(this.scene, this.camera);
+}
+
 Intro.prototype.onStart = function( game ) {
 	this.game = game;
-	this.game.camera = new THREE.OrthographicCamera(
+	this.scene = new THREE.Scene();
+	this.camera = new THREE.OrthographicCamera(
 		0,
 		window.innerWidth,
 		0,
 		window.innerHeight
 	);
-	this.controller = new IntroController( game );
+	this.controller = new IntroController( game, this.camera, this.scene );
 	game.controllers.push( this.controller );
 	game.loader.get("sound/radmarslogo").play();
 };
 
 Intro.prototype.resize = function( width, height ) {
-	this.game.camera.right = width;
-	this.game.camera.bottom = height;
-	this.game.camera.updateProjectionMatrix();
+	this.camera.right = width;
+	this.camera.bottom = height;
+	this.camera.updateProjectionMatrix();
 
 	this.controller.resize( width, height );
 }
+
 Intro.prototype.onStop = function( game) {
 	game.loader.get("sound/radmarslogo").stop();
 	this.controller.onStop();
 	game.controllers = [];
 };
 
-function IntroController( game ) {
+function IntroController( game, camera, scene ) {
 
 	this.game = game;
 	var glassesFiles = [
@@ -293,8 +306,8 @@ function IntroController( game ) {
 		});
 	});
 
-	this.cx = this.game.camera.right / 2;
-	this.cy = this.game.camera.bottom / 2;
+	this.cx = camera.right / 2;
+	this.cy = camera.bottom / 2;
 
 	this.textSprite = new THREE.Sprite( this.textMaterials[ 0 ] );
 	this.textSprite.scale.set( 108, 28, 1 );
@@ -315,13 +328,15 @@ function IntroController( game ) {
 
 	document.onkeypress = function( e ) {
 		if( e.keyCode == 13 ) {
-			game.setState( new GameState() );
+			game.operations.push(function() {
+				game.setState( new GameState() );
+			});
 		}
 	};
 
-	this.game.scene.add( this.bgSprite );
-	this.game.scene.add( this.textSprite );
-	this.game.scene.add( this.glassesSprite );
+	scene.add( this.bgSprite );
+	scene.add( this.textSprite );
+	scene.add( this.glassesSprite );
 }
 
 IntroController.prototype.resize = function( width, height ) {
@@ -332,14 +347,15 @@ IntroController.prototype.resize = function( width, height ) {
 IntroController.prototype.onStop = function() {
 	document.onkeypress = function( e ) {
 	};
-
-	this.game.scene.remove( this.glassesSprite );
-	this.game.scene.remove( this.bgSprite );
-	this.game.scene.remove( this.textSprite );
 }
 
 IntroController.prototype.update = function( dt ) {
 	this.counter += dt;
+
+//	if( this.counter > 4000)
+//		game.operations.push(function() {
+//				game.setState( new GameState() );
+//			});
 
 	if( this.counter < 2000)
 		this.textSprite.material = this.textMaterials[ 0 ];
@@ -382,5 +398,74 @@ IntroController.prototype.update = function( dt ) {
 		this.cy - 28 / 2 + 80, 0
 	);
 
+}
+
+function GameOver() {
+}
+
+GameOver.prototype.render = function( game ) {
+	game.renderer.render(this.scene, this.camera);
+}
+
+GameOver.prototype.onStart = function( game ) {
+	this.game = game;
+	this.scene = new THREE.Scene();
+	this.camera = new THREE.OrthographicCamera(
+		0,
+		window.innerWidth,
+		0,
+		window.innerHeight
+	);
+	this.controller = new GameOverController( game, this.camera, this.scene );
+	game.controllers.push( this.controller );
+	game.loader.get("sound/radmarslogo").play();
+};
+
+GameOver.prototype.resize = function( width, height ) {
+	this.camera.right = width;
+	this.camera.bottom = height;
+	this.camera.updateProjectionMatrix();
+
+	this.controller.resize( width, height );
+}
+
+GameOver.prototype.onStop = function( game) {
+	game.loader.get("sound/radmarslogo").stop();
+	this.controller.onStop();
+	game.controllers = [];
+};
+
+function GameOverController( game, camera, scene ) {
+	this.game = game;
+
+	this.cx = camera.right / 2;
+	this.cy = camera.bottom / 2;
+
+	var bgMaterial = new THREE.SpriteMaterial({
+		map: this.game.loader.get( "assets/gameover/gameover.png" ),
+		useScreenCoordinates: true,
+		alignment: THREE.SpriteAlignment.topLeft
+	});
+
+	this.bgSprite = new THREE.Sprite( bgMaterial );
+	this.bgSprite.scale.set( 800, 600, 1 );
+
+	this.counter = 0;
+
+	scene.add( this.bgSprite );
+}
+
+GameOverController.prototype.resize = function( width, height ) {
+	this.cx = width / 2;
+	this.cy = height / 2;
+}
+
+GameOverController.prototype.onStop = function() {
+}
+
+GameOverController.prototype.update = function( dt ) {
+	this.counter += dt;
+
+	this.bgSprite.position.set( this.cx - 800/2, this.cy - 600/2, 0 );
 }
 

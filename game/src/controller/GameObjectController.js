@@ -2,7 +2,7 @@ function GameObjectController(main) {
     this.main = main;
     this.input = new Input();
 
-    this.camera = this.main.camera;
+    this.camera = this.main.state.camera;
     this.camera.up = new THREE.Vector3( 0, 0, 1 );
     this.cameraTarget = new THREE.Vector3();
     this.level = new Level(this);
@@ -16,7 +16,7 @@ function GameObjectController(main) {
     this.nextChain = null;
     this.chain = [];
 
-    this.main.add(this.avatar);
+    this.main.state.scene.add(this.avatar.holder);
 
     // have any of these keys been pressed this update cycle?
     this.a = this.s = this.d = this.f = this.g = false;
@@ -56,6 +56,12 @@ GameObjectController.prototype.checkHits = function () {
             this.baddies[i].hit(1);
 
             //TODO: avatar take a hit.
+            this.avatar.hp--;
+            if( this.avatar.hp == 0 ) {
+                this.main.operations.push(function(game) {
+                    game.setState( new GameOver() );
+                });
+            }
         }
     }
 };
@@ -73,7 +79,7 @@ GameObjectController.prototype.spawnDieParticles = function (baddie) {
     for (i = 0; i < 10; i++) {
         particle = new Particle(baddie.pos.clone(), baddie.color, baddie.wireColor, baddie.size, 1.0, 200);
         this.particles.push(particle);
-        this.main.add(particle);
+        this.main.state.scene.add(particle.holder);
     }
 };
 
@@ -85,14 +91,14 @@ GameObjectController.prototype.spawnChainParticles = function (baddie) {
     for (i = 0; i < 5; i++) {
         particle = new Particle(baddie.pos.clone(), 0x000000, 0x000000, baddie.size, 1.0, 200);
         this.particles.push(particle);
-        this.main.add(particle);
+        this.main.state.scene.add(particle.holder);
     }
 };
 
 GameObjectController.prototype.makeBaddie = function (baddie) {
     baddie.target = this.avatar;
     this.baddies.push(baddie);
-    this.main.add(baddie);
+    this.main.state.scene.add(baddie.holder);
 }
 
 GameObjectController.prototype.makeLinkedBaddies = function (baddies) {
@@ -103,7 +109,7 @@ GameObjectController.prototype.makeLinkedBaddies = function (baddies) {
 
         baddies[i].target = this.avatar;
         this.baddies.push(baddies[i]);
-        this.main.add(baddies[i]);
+        this.main.state.scene.add(baddies[i].holder);
     }
 };
 
@@ -112,7 +118,7 @@ GameObjectController.prototype.updateObjects = function (objects, dt) {
         objects[i].update(dt);
 
         if (!objects[i].alive) {
-            this.main.remove(objects[i]);
+            this.main.state.scene.remove(objects[i].holder);
             objects[i].dispose();
             objects.splice(i, 1);
         }
