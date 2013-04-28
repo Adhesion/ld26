@@ -162,25 +162,31 @@ Main.prototype.tryToStart = function() {
 };
 
 Main.prototype.getAssets = function() {
-	var hitAsset = function( base ) {
+	var hitAsset = function( base, prefix, vol ) {
 		return {
-			name: "sound/hit" + base,
-			volume: 0.3,
+			name: "sound/" + (prefix || "") + "hit" + base,
+			volume: vol || 0.27,
 			urls: [
-				"sound/hit" + base + ".mp3",
-				"sound/hit" + base + ".ogg"
+				"sound/" + (prefix || "") + "hit" + base + ".mp3",
+                "sound/" + (prefix || "") + "hit" + base + ".ogg"
 			],
 			type: 'audio',
 			callback: function( audio ) {
-				window.hitSounds = window.hitSounds || [];
-				window.hitSounds[base] = audio;
+                if( !prefix ) {
+                    window.hitSounds = window.hitSounds || [];
+                    window.hitSounds[base] = audio;
+                }
 			}
 		};
 	};
 
 	return [
 		{ name: "sound/radmarslogo", urls: ['sound/radmarslogo.mp3', 'sound/radmarslogo.ogg'], type: 'audio', volume: 0.9, buffer: true },
-		{ name: "sound/ld26", urls: ['sound/ld26.mp3', 'sound/ld26.ogg'], type: 'audio', volume: 0.9, buffer: true },
+		{ name: "sound/ld26", urls: ['sound/ld26.mp3', 'sound/ld26.ogg'], type: 'audio', volume: 0.95, buffer: true },
+		{ name: "sound/bosshit", urls: ['sound/bosshit.mp3', 'sound/bosshit.ogg'], type: 'audio', volume: 0.45, buffer: true },
+		{ name: "sound/bossdeath", urls: ['sound/bossdeath.mp3', 'sound/bossdeath.ogg'], type: 'audio', volume: 0.9, buffer: true },
+		{ name: "sound/miss", urls: ['sound/miss.mp3', 'sound/miss.ogg'], type: 'audio', volume: 0.4, buffer: true },
+		{ name: "sound/misfire", urls: ['sound/misfire.mp3', 'sound/misfire.ogg'], type: 'audio', volume: 0.5, buffer: true },
 		hitAsset( 0 ),
 		hitAsset( 1 ),
 		hitAsset( 2 ),
@@ -196,8 +202,13 @@ Main.prototype.getAssets = function() {
 		hitAsset( 12 ),
 		hitAsset( 13 ),
 		hitAsset( 14 ),
-		{ name: 'assets/gameover/gameover.png', type: 'img', },
-		{ name: 'assets/intro/intro_bg.png', type: 'img', },
+        hitAsset( 0, "player", 0.35 ),
+        hitAsset( 1, "player", 0.35 ),
+        hitAsset( 2, "player", 0.35 ),
+        hitAsset( 3, "player", 0.35 ),
+        hitAsset( 4, "player", 0.35 ),
+        { name: 'assets/gameover/gameover.png', type: 'img', },
+        { name: 'assets/intro/intro_bg.png', type: 'img', },
 		{ name: 'assets/intro/intro_glasses1.png', type: 'img' },
 		{ name: 'assets/intro/intro_glasses2.png', type: 'img' },
 		{ name: 'assets/intro/intro_glasses3.png', type: 'img' },
