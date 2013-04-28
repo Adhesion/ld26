@@ -295,6 +295,7 @@ GameState.prototype.onStart = function( game ) {
 		effect.uniforms[ 'scale' ].value = 4;
 		effect.renderToScreen = true;
 		this.composer.addPass( effect );
+
 		// more passes?
 	}
 }

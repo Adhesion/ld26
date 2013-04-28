@@ -7,6 +7,10 @@ function GameObjectController(main) {
     this.cameraTarget = new THREE.Vector3();
     this.level = new Level(this);
 
+    this.camHolder = new THREE.Object3D();
+    this.camHolder.add(this.camera);
+    this.main.state.scene.add(this.camHolder);
+
     this.avatar = new Avatar();
     this.baddieSpawnRate = this.baddieSpawnCount = 1.0;
 
@@ -23,6 +27,7 @@ function GameObjectController(main) {
     // have any of these keys been pressed this update cycle?
     this.x = this.c = this.v = this.b = this.n = false;
 
+    this.sway = 0;
     //Howler.mute();
 }
 
@@ -38,6 +43,13 @@ GameObjectController.prototype.update = function () {
     this.updateObjects(this.particles, dt);
     this.avatar.update(dt);
     this.boss.update(dt);
+
+
+    this.sway += dt;
+    if( this.sway > Math.PI * 2) this.sway -= Math.PI*2;
+    this.camHolder.position.x = Math.cos(this.sway) * 10;
+    this.camHolder.position.z = Math.sin(this.sway) * 10;
+
 
     this.camera.lookAt(this.cameraTarget);
 

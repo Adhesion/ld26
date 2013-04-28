@@ -43,6 +43,7 @@ SauceBoss.prototype.enable = function () {
 };
 
 SauceBoss.prototype.update = function (dt) {
+
     this.seekTarget(dt);
 
     this.solid.rotation.x += 0.025;
