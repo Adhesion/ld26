@@ -203,7 +203,6 @@ GameState.prototype.resize = function( width, height ) {
 }
 
 GameState.prototype.onStart = function( game ) {
-	console.log( "Starting game state!" );
 	this.game = game;
 
 	game.loader.get("sound/ld26").play();
@@ -231,7 +230,6 @@ GameState.prototype.onStart = function( game ) {
 }
 
 GameState.prototype.onStop = function( game ) {
-	console.log( "Stopping game state!" );
 }
 
 function Intro() {
@@ -247,20 +245,19 @@ Intro.prototype.onStart = function( game ) {
 	);
 	this.controller = new IntroController( game );
 	game.controllers.push( this.controller );
-	console.log( "Starting intro... ?" );
 	game.loader.get("sound/radmarslogo").play();
 };
 
-Intro.prototype.reisze = function( width, height ) {
+Intro.prototype.resize = function( width, height ) {
 	this.game.camera.right = width;
-	this.game.camera.height = height;
+	this.game.camera.bottom = height;
 	this.game.camera.updateProjectionMatrix();
-}
 
+	this.controller.resize( width, height );
+}
 Intro.prototype.onStop = function( game) {
 	game.loader.get("sound/radmarslogo").stop();
 	this.controller.onStop();
-	console.log( "Stopping intro... ?" );
 	game.controllers = [];
 };
 
@@ -296,19 +293,13 @@ function IntroController( game ) {
 		});
 	});
 
-	this.textSpriteIndex = 0;
+	this.cx = this.game.camera.right / 2;
+	this.cy = this.game.camera.bottom / 2;
 
-	this.textSprite = new THREE.Sprite(
-		this.textMaterials[ this.textSpriteIndex ]
-	);
-	this.textSprite.position.set( 346, 377, 0 );
+	this.textSprite = new THREE.Sprite( this.textMaterials[ 0 ] );
 	this.textSprite.scale.set( 108, 28, 1 );
 
-	this.glassesSpriteIndex = 0;
-	this.glassesSprite = new THREE.Sprite(
-		this.glassesMaterials[ this.glassesSpriteIndex ]
-	);
-	this.glassesSprite.position.set( 0, 0, 0 );
+	this.glassesSprite = new THREE.Sprite( this.glassesMaterials[ 0 ] );
 	this.glassesSprite.scale.set( 144, 24, 1 );
 
 	var bgMaterial = new THREE.SpriteMaterial({
@@ -318,8 +309,8 @@ function IntroController( game ) {
 	});
 
 	this.bgSprite = new THREE.Sprite( bgMaterial );
-	this.bgSprite.position.set( 0, 0, 0 );
 	this.bgSprite.scale.set( 800, 600, 1 );
+
 	this.counter = 0;
 
 	document.onkeypress = function( e ) {
@@ -333,7 +324,15 @@ function IntroController( game ) {
 	this.game.scene.add( this.glassesSprite );
 }
 
+IntroController.prototype.resize = function( width, height ) {
+	this.cx = width / 2;
+	this.cy = height / 2;
+}
+
 IntroController.prototype.onStop = function() {
+	document.onkeypress = function( e ) {
+	};
+
 	this.game.scene.remove( this.glassesSprite );
 	this.game.scene.remove( this.bgSprite );
 	this.game.scene.remove( this.textSprite );
@@ -341,37 +340,47 @@ IntroController.prototype.onStop = function() {
 
 IntroController.prototype.update = function( dt ) {
 	this.counter += dt;
-	if( this.counter < 2000)
-		this.textSprite.material = this.textMaterials[ this.textSpriteIndex = 0 ];
-	else if( this.counter < 2050) {
-		this.textSprite.position.set( 306, 377, 0 );
-		this.textSprite.scale.set( 192, 28, 1 );
-		this.textSprite.material = this.textMaterials[ this.textSpriteIndex = 1 ];
-	}
-	else if( this.counter < 2600)
-		this.textSprite.material = this.textMaterials[ this.textSpriteIndex = 2 ];
-	else if( this.counter < 2650)
-		this.textSprite.material = this.textMaterials[ this.textSpriteIndex = 1 ];
-	else if( this.counter < 2700)
-		this.textSprite.material = this.textMaterials[ this.textSpriteIndex = 2 ];
-	else if( this.counter < 2750)
-		this.textSprite.material = this.textMaterials[ this.textSpriteIndex = 1 ];
-	else if( this.counter < 2800)
-		this.textSprite.material = this.textMaterials[ this.textSpriteIndex = 2 ];
-	else if( this.counter < 2850)
-		this.textSprite.material = this.textMaterials[ this.textSpriteIndex = 1 ];
-	else
-		this.textSprite.material = this.textMaterials[ this.textSpriteIndex = 2 ];
 
 	if( this.counter < 2000)
-		this.glassesSprite.position.set( 249+80,  289 * (this.counter/2000.0), 0 );
-	else if( this.counter < 2150 )
-		this.glassesSprite.material = this.glassesMaterials[ this.glassesSpriteIndex = 1 ];
-	else if( this.counter < 2300 )
-		this.glassesSprite.material = this.glassesMaterials[ this.glassesSpriteIndex = 2 ];
-	else if( this.counter < 2550 )
-		this.glassesSprite.material = this.glassesMaterials[ this.glassesSpriteIndex = 3 ];
+		this.textSprite.material = this.textMaterials[ 0 ];
+	else if( this.counter < 2050) {
+		this.textSprite.scale.set( 192, 28, 1 );
+		this.textSprite.material = this.textMaterials[ 1 ];
+	}
+	else if( this.counter < 2600)
+		this.textSprite.material = this.textMaterials[ 2 ];
+	else if( this.counter < 2650)
+		this.textSprite.material = this.textMaterials[ 1 ];
+	else if( this.counter < 2700)
+		this.textSprite.material = this.textMaterials[ 2 ];
+	else if( this.counter < 2750)
+		this.textSprite.material = this.textMaterials[ 1 ];
+	else if( this.counter < 2800)
+		this.textSprite.material = this.textMaterials[ 2 ];
+	else if( this.counter < 2850)
+		this.textSprite.material = this.textMaterials[ 1 ];
 	else
-		this.glassesSprite.material = this.glassesMaterials[ this.glassesSpriteIndex = 0 ];
+		this.textSprite.material = this.textMaterials[ 2 ];
+
+	if( this.counter < 2000)
+		this.glassesSprite.position.y = ( this.cy - this.glassesSprite.scale.y / 2 ) * (this.counter/2000.0);
+	else if( this.counter < 2150 )
+		this.glassesSprite.material = this.glassesMaterials[ 1 ];
+	else if( this.counter < 2300 )
+		this.glassesSprite.material = this.glassesMaterials[ 2 ];
+	else if( this.counter < 2550 )
+		this.glassesSprite.material = this.glassesMaterials[ 3 ];
+	else
+		this.glassesSprite.material = this.glassesMaterials[ 0 ];
+
+	this.bgSprite.position.set( this.cx - 800/2, this.cy - 600/2, 0 );
+	this.textSprite.position.set( this.cx - 108/2 , 377, 0 );
+	this.glassesSprite.position.x = this.cx - 144/2;
+
+	this.textSprite.position.set(
+		this.cx - this.textSprite.scale.x/2 ,
+		this.cy - 28 / 2 + 80, 0
+	);
+
 }
 
