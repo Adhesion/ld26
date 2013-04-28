@@ -24,7 +24,7 @@ function GameObjectController(main) {
 
 GameObjectController.prototype.update = function () {
     TWEEN.update();
-    
+
     this.checkInput();
     var dt = 1/60;
 
@@ -205,11 +205,9 @@ GameObjectController.prototype.moveCamera = function (pos, target) {
     //this.cameraTarget = target;
     //this.camera.lookAt(this.cameraTarget);
 
-    new TWEEN.Tween(this.camera.position)
-        .to({x: pos.x, y: pos.y, z:pos.z}, 1000);
+    new TWEEN.Tween(this.camera.position).to({x: pos.x, y: pos.y, z:pos.z}, 1000).start();
 
-    new TWEEN.Tween(this.cameraTarget)
-        .to({x: target.x, y: target.y, z:target.z}, 1000);
+    new TWEEN.Tween(this.cameraTarget).to({x: target.x, y: target.y, z:target.z}, 1000).start();
 };
 
 GameObjectController.prototype.defaultCamera = function () {
