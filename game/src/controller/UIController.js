@@ -4,19 +4,14 @@ function UIController(main) {
     this.displayScore = 0;
     this.score = 0;
 
+    /*
     this.scoreTxt = document.createTextNode("0");
 
     this.scoreDiv = document.createElement('div');
     this.scoreDiv.setAttribute('class', 'score');
     this.scoreDiv.appendChild(this.scoreTxt);
-
-    this.infoDiv = document.createElement('div');
-    this.infoDiv.setAttribute('class', 'info');
-
-    this.infoDiv.appendChild(document.createTextNode( "them notes: x, c, v, b, n" ));
-
     document.body.appendChild(this.scoreDiv);
-    document.body.appendChild(this.infoDiv);
+    */
 
     this.scene = new THREE.Scene();
     this.camera = new THREE.OrthographicCamera(
@@ -26,6 +21,17 @@ function UIController(main) {
         window.innerHeight
     );
     this.camera.position.z = 100;
+
+    this.notes = new THREE.Sprite(
+        new THREE.SpriteMaterial({
+            map: main.loader.get( "assets/hud/notes.png" ),
+            useScreenCoordinates: true,
+            alignment: THREE.SpriteAlignment.topLeft
+        })
+    );
+
+    this.notes.position.set( window.innerWidth - 320, 20, 0 );
+    this.notes.scale.set( 298, 13, 1 );
 
     this.barBg = new THREE.Mesh(
         new THREE.PlaneGeometry( 100, 30 ),
@@ -51,12 +57,14 @@ function UIController(main) {
 
     this.scene.add( this.barBg );
     this.scene.add( this.barFg );
+    this.scene.add( this.notes );
 }
 
 UIController.prototype.resize = function( width, height ) {
     this.camera.right = width;
     this.camera.bottom = height;
     this.camera.updateProjectionMatrix();
+    this.notes.position.set( width - 320, 20 );
 }
 
 UIController.prototype.addScore = function (val) {
@@ -74,6 +82,8 @@ UIController.prototype.update = function () {
         }
     }
 
+    /*
     this.scoreTxt.nodeValue = "" + Math.round(this.displayScore);
+    */
 };
  

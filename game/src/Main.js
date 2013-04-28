@@ -90,10 +90,8 @@ Loader.prototype.load = function( assets ) {
 		}
 		else if( asset.type == 'model' ) {
 			var hackName = asset.name;
-			console.log( "model namey hackey bullshit 1: " + hackName );
 			modelLoader.load( hackName,
 				function(geo) {
-					console.log( "model namey hackey bullshit 2: " + hackName );
 					self.assets[hackName] = geo;
 				}
 			);
@@ -207,6 +205,7 @@ Main.prototype.getAssets = function() {
 		{ name: 'assets/intro/intro_radmars1.png', type: 'img' },
 		{ name: 'assets/intro/intro_radmars2.png', type: 'img' },
 		{ name: 'assets/intro/intro_mars.png', type: 'img' },
+		{ name: 'assets/hud/notes.png', type: 'img' },
 		{ name: 'assets/models/pyramid.js', type: 'model' }
 	];
 };
@@ -231,7 +230,6 @@ Main.prototype.resize = function (event) {
 Main.prototype.update = function () {
 	var op;
 	while( op = this.operations.pop() ) {
-		console.log( "Running operation" );
 		op(this);
 	}
 
