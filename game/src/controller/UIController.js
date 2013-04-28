@@ -13,7 +13,7 @@ function UIController(main) {
     this.infoDiv = document.createElement('div');
     this.infoDiv.setAttribute('class', 'info');
 
-    this.infoDiv.appendChild(document.createTextNode( "them notes: a, s, d, f, g" ));
+    this.infoDiv.appendChild(document.createTextNode( "them notes: z, x, c, v, b" ));
 
     document.body.appendChild(this.scoreDiv);
     document.body.appendChild(this.infoDiv);
