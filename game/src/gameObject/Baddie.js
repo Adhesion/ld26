@@ -94,7 +94,6 @@ Baddie.prototype.update = function (dt) {
 
     GameObject.prototype.update.call(this, dt);
 
-    if (this.pos.y < -200) this.alive = false;
     this.rotation.x += 0.025;
     this.rotation.y += 0.025;
 

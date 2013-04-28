@@ -42,7 +42,6 @@ Chunk.prototype.build = function() {
     // super class implement
 };
 
-
 Chunk.prototype.resetItems = function() {
     for( var i=0; i<this.items.length; i++){
         this.items[i].complete = false;

@@ -194,6 +194,7 @@ Main.prototype.remove = function (obj) {
 };
 
 function GameState() {
+
 };
 
 GameState.prototype.resize = function( width, height ) {

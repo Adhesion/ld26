@@ -9,6 +9,11 @@ function Particle(pos, color, wireColor, size, life, speed) {
     this.vel.y = Math.random() * speed - speed * 0.5;
     this.vel.z = Math.random() * speed - speed * 0.5;
 
+    var v = this.vel.clone();
+    v.setLength(size);
+
+    this.vel.addVectors(this.vel, v);
+
     this.solidMat.blending = THREE.AdditiveAlphaBlending;
     this.wireMat.blending = THREE.AdditiveAlphaBlending;
 }

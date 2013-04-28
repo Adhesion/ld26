@@ -18,8 +18,12 @@ function GameObjectController(main) {
 
     this.main.add(this.avatar);
 
+    this.boss = new SauceBoss();
+
     // have any of these keys been pressed this update cycle?
     this.a = this.s = this.d = this.f = this.g = false;
+
+    Howler.mute();
 }
 
 GameObjectController.prototype.update = function () {
@@ -33,6 +37,7 @@ GameObjectController.prototype.update = function () {
     this.updateObjects(this.baddies, dt);
     this.updateObjects(this.particles, dt);
     this.avatar.update(dt);
+    this.boss.update(dt);
 
     this.camera.lookAt(this.cameraTarget);
 
@@ -53,6 +58,9 @@ GameObjectController.prototype.checkHits = function () {
 
         if(d.length() <= this.baddies[i].size ){
             this.spawnDieParticles(this.baddies[i]);
+
+            //this is kinda hacks, need to disconnect it from th e boss when it dies...
+            if(this.baddies[i].child == this.boss) this.baddies[i].child = null;
             this.baddies[i].hit(1);
 
             //TODO: avatar take a hit.
@@ -72,6 +80,17 @@ GameObjectController.prototype.spawnDieParticles = function (baddie) {
 
     for (i = 0; i < 10; i++) {
         particle = new Particle(baddie.pos.clone(), baddie.color, baddie.wireColor, baddie.size, 1.0, 200);
+        this.particles.push(particle);
+        this.main.add(particle);
+    }
+};
+
+GameObjectController.prototype.spawnBossHitParticles = function () {
+    var i;
+    var particle;
+
+    for (i = 0; i < 50; i++) {
+        particle = new Particle(this.boss.pos.clone(), this.boss.color, this.boss.wireColor, this.boss.size, 3.0, 1000);
         this.particles.push(particle);
         this.main.add(particle);
     }
@@ -106,6 +125,13 @@ GameObjectController.prototype.makeLinkedBaddies = function (baddies) {
         this.main.add(baddies[i]);
     }
 };
+
+
+GameObjectController.prototype.makeBossLinkedBaddies = function (baddies) {
+    this.makeLinkedBaddies(baddies);
+    baddies[baddies.length-1].linkChild(this.boss);
+}
+
 
 GameObjectController.prototype.updateObjects = function (objects, dt) {
     for (var i = 0; i < objects.length; i++) {
@@ -183,12 +209,25 @@ GameObjectController.prototype.hitBaddie = function (baddie) {
     this.spawnDieParticles(baddie);
 
     if(baddie.child != null){
-        this.nextChain = baddie.child;
-        this.chain.push(baddie);
+        if(baddie.child == this.boss){
+            baddie.child = null;
+            baddie.alive = false;
+            this.nextChain = null;
+            this.breakChain();
+            //TODO: attack boss, spawn particles n shit.
+
+            this.spawnBossHitParticles();
+
+            console.log("boss has been hit");
+        }else{
+            this.nextChain = baddie.child;
+            this.chain.push(baddie);
+        }
     }else{
         this.nextChain = null;
         this.breakChain();
     }
+
     //TODO: add some score
 };
 
@@ -208,4 +247,18 @@ GameObjectController.prototype.moveCamera = function (pos, target, time) {
 GameObjectController.prototype.defaultCamera = function (time) {
     new TWEEN.Tween(this.camera.position).to({x: 0, y: -200, z:200}, time*1000).start();
     new TWEEN.Tween(this.cameraTarget).to({x: 0, y:0, z:0}, time*1000).start();
+};
+
+GameObjectController.prototype.bossAppear = function (pos) {
+    this.boss.appear(pos);
+    this.main.add(this.boss);
+};
+
+GameObjectController.prototype.bossMove = function (pos) {
+    this.boss.move(pos);
+};
+
+GameObjectController.prototype.bossHide = function () {
+    //TODO: spawn some particles n shit because that mofo' 'spacejumped'
+    this.main.remove(this.boss);
 };
