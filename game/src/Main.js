@@ -121,6 +121,7 @@ Main.prototype.getAssets = function() {
 	};
 
 	return [
+		{ name: "sound/radmarslogo", urls: ['sound/radmarslogo.mp3', 'sound/radmarslogo.ogg'], type: 'audio', volume: 0.9, buffer: true },
 		{ name: "sound/ld26", urls: ['sound/ld26.mp3', 'sound/ld26.ogg'], type: 'audio', volume: 0.9, buffer: true },
 		hitAsset( 0 ),
 		hitAsset( 1 ),
@@ -247,6 +248,7 @@ Intro.prototype.onStart = function( game ) {
 	this.controller = new IntroController( game );
 	game.controllers.push( this.controller );
 	console.log( "Starting intro... ?" );
+	game.loader.get("sound/radmarslogo").play();
 };
 
 Intro.prototype.reisze = function( width, height ) {
@@ -256,6 +258,7 @@ Intro.prototype.reisze = function( width, height ) {
 }
 
 Intro.prototype.onStop = function( game) {
+	game.loader.get("sound/radmarslogo").stop();
 	this.controller.onStop();
 	console.log( "Stopping intro... ?" );
 	game.controllers = [];
