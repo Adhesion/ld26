@@ -30,8 +30,8 @@ IntroChunk.prototype.build = function() {
             new Baddie(new THREE.Vector3(200,800,0), 10, 0, 0),
             new Baddie(new THREE.Vector3(300,800,0), 10, 0, 0) ])}},
 
-        // camera Vector3 pos, Vector3 target default is (0,-200, 200) --> (0,0,0)
-        {time:2.0, action:function(game){ game.moveCamera(new THREE.Vector3(200,-200, 200), new THREE.Vector3(0,0,0)) } },
+        // camera Vector3 pos, Vector3 target default is (0,-200, 200) --> (0,0,0), time (seconds)
+        {time:2.0, action:function(game){ game.moveCamera(new THREE.Vector3(200,-200, 200), new THREE.Vector3(0,0,0), 1.0) } },
 
         {time:8.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(0,800,0), 10, 0, 0) ) } },
         {time:9.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(0,800,0), 10, 0, 0) ) } },
@@ -40,8 +40,8 @@ IntroChunk.prototype.build = function() {
         {time:12.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(0,800,0), 10, 0, 0) ) } },
         {time:15.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(0,800,0), 10, 0, 0) ) } },
 
-        // reset camera to default position.
-        {time:17.0, action:function(game){ game.defaultCamera() } },
+        // reset camera to default position. (time)
+        {time:17.0, action:function(game){ game.defaultCamera(), 1.5 } },
 
         // this is an easy way to add 'padding' to the end of a chunk
         {time:18.0, action:function(game){ }}
