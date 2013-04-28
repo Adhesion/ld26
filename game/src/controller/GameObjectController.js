@@ -69,6 +69,7 @@ GameObjectController.prototype.checkHits = function () {
             this.baddies[i].hit(1);
 
             //TODO: avatar take a hit.
+            this.main.loader.get( "sound/playerhit" + this.baddies[i].type).play();
             this.avatar.hp--;
             if( this.avatar.hp == 0 ) {
                 this.main.operations.push(function(game) {
@@ -196,6 +197,7 @@ GameObjectController.prototype.attack = function (type) {
         }else{
             this.breakChain();
             // TODO: didn't hit anything.. penalize player.
+            this.main.loader.get( "sound/miss").play();
         }
     }else{
         // not in a chain, check if any bullets are in range.
@@ -210,8 +212,8 @@ GameObjectController.prototype.attack = function (type) {
                 }
             }
         }
-
         // TODO: didn't hit anything.. penalize player.
+        this.main.loader.get( "sound/miss").play();
     }
 };
 
@@ -232,9 +234,11 @@ GameObjectController.prototype.hitBaddie = function (baddie, chain) {
             this.spawnBossHitParticles();
             window.hitSounds[baddie.note].play();
             // TODO boss hit sound?
-
+            // probably should just call boss.hit()?
             console.log("boss has been hit");
+            this.main.loader.get( "sound/bosshit").play(); // temp
         }
+        // regular enemy in chain
         else {
             this.nextChain = baddie.child;
             this.chain.push(baddie);

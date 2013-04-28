@@ -54,8 +54,6 @@ SauceBoss.prototype.update = function (dt) {
 };
 
 SauceBoss.prototype.hit = function (damage) {
-    window.hitSounds[this.note].play();
-
     //something?
 
     // buh? this might never get called

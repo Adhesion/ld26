@@ -162,29 +162,30 @@ Main.prototype.tryToStart = function() {
 };
 
 Main.prototype.getAssets = function() {
-	var hitAsset = function( base, pre ) {
-        var prefix = pre || "";
+	var hitAsset = function( base, prefix, vol ) {
 		return {
-			name: "sound/hit" + base,
-			volume: 0.3,
+			name: "sound/" + (prefix || "") + "hit" + base,
+			volume: vol || 0.27,
 			urls: [
-				prefix + "sound/hit" + base + ".mp3",
-                prefix + "sound/hit" + base + ".ogg"
+				"sound/" + (prefix || "") + "hit" + base + ".mp3",
+                "sound/" + (prefix || "") + "hit" + base + ".ogg"
 			],
 			type: 'audio',
 			callback: function( audio ) {
-				window.hitSounds = window.hitSounds || [];
-				window.hitSounds[base] = audio;
+                if( !prefix ) {
+                    window.hitSounds = window.hitSounds || [];
+                    window.hitSounds[base] = audio;
+                }
 			}
 		};
 	};
 
 	return [
 		{ name: "sound/radmarslogo", urls: ['sound/radmarslogo.mp3', 'sound/radmarslogo.ogg'], type: 'audio', volume: 0.9, buffer: true },
-		{ name: "sound/ld26", urls: ['sound/ld26.mp3', 'sound/ld26.ogg'], type: 'audio', volume: 0.9, buffer: true },
-		{ name: "sound/bosshit", urls: ['sound/bosshit.mp3', 'sound/bosshit.ogg'], type: 'audio', volume: 0.4, buffer: true },
+		{ name: "sound/ld26", urls: ['sound/ld26.mp3', 'sound/ld26.ogg'], type: 'audio', volume: 0.95, buffer: true },
+		{ name: "sound/bosshit", urls: ['sound/bosshit.mp3', 'sound/bosshit.ogg'], type: 'audio', volume: 0.45, buffer: true },
 		{ name: "sound/bossdeath", urls: ['sound/bossdeath.mp3', 'sound/bossdeath.ogg'], type: 'audio', volume: 0.9, buffer: true },
-		{ name: "sound/miss", urls: ['sound/miss.mp3', 'sound/miss.ogg'], type: 'audio', volume: 0.5, buffer: true },
+		{ name: "sound/miss", urls: ['sound/miss.mp3', 'sound/miss.ogg'], type: 'audio', volume: 0.4, buffer: true },
 		{ name: "sound/misfire", urls: ['sound/misfire.mp3', 'sound/misfire.ogg'], type: 'audio', volume: 0.5, buffer: true },
 		hitAsset( 0 ),
 		hitAsset( 1 ),
@@ -201,11 +202,11 @@ Main.prototype.getAssets = function() {
 		hitAsset( 12 ),
 		hitAsset( 13 ),
 		hitAsset( 14 ),
-        hitAsset( 0, "player" ),
-        hitAsset( 1, "player" ),
-        hitAsset( 2, "player" ),
-        hitAsset( 3, "player" ),
-        hitAsset( 4, "player" ),
+        hitAsset( 0, "player", 0.35 ),
+        hitAsset( 1, "player", 0.35 ),
+        hitAsset( 2, "player", 0.35 ),
+        hitAsset( 3, "player", 0.35 ),
+        hitAsset( 4, "player", 0.35 ),
         { name: 'assets/gameover/gameover.png', type: 'img', },
         { name: 'assets/intro/intro_bg.png', type: 'img', },
 		{ name: 'assets/intro/intro_glasses1.png', type: 'img' },
