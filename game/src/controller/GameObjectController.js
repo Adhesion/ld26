@@ -45,7 +45,6 @@ GameObjectController.prototype.update = function () {
     this.checkHits();
 };
 
-
 GameObjectController.prototype.checkHits = function () {
     var d = new THREE.Vector3();
 
@@ -106,7 +105,6 @@ GameObjectController.prototype.spawnBossHitParticles = function () {
         this.main.add(particle);
     }
 };
-
 
 GameObjectController.prototype.spawnChainParticles = function (baddie) {
     var i;
