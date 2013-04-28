@@ -15,7 +15,7 @@ IntroChunk.prototype.constructor = IntroChunk;
 IntroChunk.prototype.build = function() {
     this.items = [
         // camera Vector3 pos, Vector3 target default is (0,-200, 200) --> (0,0,0)
-        {time:2.0, action:function(game){ game.moveCamera(new THREE.Vector3(200,-200, 200), new THREE.Vector3(0,0,0)) } },
+        {time:2.0, action:function(game){ game.moveCamera(new THREE.Vector3(200,-200, 200), new THREE.Vector3(0,0,0), 1.0) } },
 
         // pass game object controller, game.
         // basic baddies: pos, size, note(0-14)
@@ -43,6 +43,9 @@ IntroChunk.prototype.build = function() {
             new Baddie(new THREE.Vector3(300,850,0), 10, 3),
             new Baddie(new THREE.Vector3(400,820,0), 10, 4) ])}},
 
+        // camera Vector3 pos, Vector3 target default is (0,-200, 200) --> (0,0,0), time (seconds)
+        {time:2.0, action:function(game){ game.moveCamera(new THREE.Vector3(200,-200, 200), new THREE.Vector3(0,0,0), 1.0) } },
+
         {time:17.0, action:function(game){ game.makeLinkedBaddies( [
             new Baddie(new THREE.Vector3(0,800,0), 10, 5),
             new Baddie(new THREE.Vector3(100,820,0), 10, 6),
@@ -57,8 +60,8 @@ IntroChunk.prototype.build = function() {
             new Baddie(new THREE.Vector3(300,805,0), 10, 13),
             new Baddie(new THREE.Vector3(400,815,0), 10, 14) ])}},
 
-        // reset camera to default position.
-        {time:17.0, action:function(game){ game.defaultCamera() } },
+        // reset camera to default position. (time)
+        {time:17.0, action:function(game){ game.defaultCamera(1.5)} },
 
         // this is an easy way to add 'padding' to the end of a chunk
         {time:20.0, action:function(game){ }}
