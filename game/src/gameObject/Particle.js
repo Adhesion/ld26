@@ -10,7 +10,7 @@ function Particle(pos, color, wireColor, size, life, speed) {
     this.vel.z = Math.random() * speed - speed * 0.5;
 
     var v = this.vel.clone();
-    v.setLength(size);
+    v.setLength(this.size)
 
     this.vel.addVectors(this.vel, v);
 

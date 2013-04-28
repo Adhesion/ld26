@@ -21,7 +21,7 @@ function GameObjectController(main) {
     this.boss = new SauceBoss();
 
     // have any of these keys been pressed this update cycle?
-    this.a = this.s = this.d = this.f = this.g = false;
+    this.x = this.c = this.v = this.b = this.n = false;
 
     //Howler.mute();
 }
@@ -59,8 +59,13 @@ GameObjectController.prototype.checkHits = function () {
         if(d.length() <= this.baddies[i].size ){
             this.spawnDieParticles(this.baddies[i]);
 
-            //this is kinda hacks, need to disconnect it from th e boss when it dies...
-            if(this.baddies[i].child == this.boss) this.baddies[i].child = null;
+            //this is kinda hacks, need to disconnect it from its child when it dies.
+            if(this.nextChain == this.baddies[i]){
+                this.breakChain();
+                this.nextChain = null;
+            }
+            if(this.baddies[i].child != null ) this.baddies[i].child = null;
+
             this.baddies[i].hit(1);
 
             //TODO: avatar take a hit.
@@ -153,31 +158,31 @@ GameObjectController.prototype.updateObjects = function (objects, dt) {
 
 GameObjectController.prototype.checkInput = function () {
     // check if keys are released.
-    if (this.input.a == false) this.a = false;
-    if (this.input.s == false) this.s = false;
-    if (this.input.d == false) this.d = false;
-    if (this.input.f == false) this.f = false;
-    if (this.input.g == false) this.g = false;
+    if (this.input.x == false) this.x = false;
+    if (this.input.c == false) this.c = false;
+    if (this.input.v == false) this.v = false;
+    if (this.input.b == false) this.b = false;
+    if (this.input.n == false) this.n = false;
 
     // only attack if key has been pressed this update.
-    if(this.input.a == true && this.a == false ){
-        this.a = true;
+    if(this.input.x == true && this.x == false ){
+        this.x = true;
         this.attack(0);
     }
-    if(this.input.s == true && this.s == false ){
-        this.s = true;
+    if(this.input.c == true && this.c == false ){
+        this.c = true;
         this.attack(1);
     }
-    if(this.input.d == true && this.d == false ){
-        this.d = true;
+    if(this.input.v == true && this.v == false ){
+        this.v = true;
         this.attack(2);
     }
-    if(this.input.f == true && this.f == false ){
-        this.f = true;
+    if(this.input.b == true && this.b == false ){
+        this.b = true;
         this.attack(3);
     }
-    if(this.input.g == true && this.g == false ){
-        this.g = true;
+    if(this.input.n == true && this.n == false ){
+        this.n = true;
         this.attack(4);
     }
 };

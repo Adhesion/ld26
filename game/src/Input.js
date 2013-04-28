@@ -2,6 +2,7 @@ function Input() {
     this.up = this.left = this.down = this.right = this.space = false;
 
     this.a = this.s = this.d = this.f = this.g = false;
+    this.z = this.x = this.c = this.v = this.b = this.n = false
 
     this.move = new THREE.Vector3(0, 0, 0);
 
@@ -37,4 +38,11 @@ Input.prototype.checkKeys = function (keycode, val) {
     if (keycode == 68) this.d = val;
     if (keycode == 70) this.f = val;
     if (keycode == 71) this.g = val;
+
+    if (keycode == 90) this.z = val;
+    if (keycode == 88) this.x = val;
+    if (keycode == 67) this.c = val;
+    if (keycode == 86) this.v = val;
+    if (keycode == 66) this.b = val;
+    if (keycode == 78) this.n = val;
 };
