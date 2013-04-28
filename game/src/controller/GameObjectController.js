@@ -28,6 +28,7 @@ function GameObjectController(main) {
     this.x = this.c = this.v = this.b = this.n = false;
 
     this.sway = 0;
+    this.shake = 0;
     //Howler.mute();
 }
 
@@ -44,17 +45,26 @@ GameObjectController.prototype.update = function () {
     this.avatar.update(dt);
     this.boss.update(dt);
 
-
-    this.sway += dt;
-    if( this.sway > Math.PI * 2) this.sway -= Math.PI*2;
-    this.camHolder.position.x = Math.cos(this.sway) * 10;
-    this.camHolder.position.z = Math.sin(this.sway) * 10;
-
-
-    this.camera.lookAt(this.cameraTarget);
-
+    this.ambientCameraMovement(dt);
     //this.spawnBaddie(dt);
     this.checkHits();
+};
+
+
+GameObjectController.prototype.ambientCameraMovement = function (dt) {
+    this.sway += dt * 0.5;
+    if( this.sway > Math.PI * 2) this.sway -= Math.PI*2;
+    var x = Math.cos(this.sway) * 10;
+    var z = Math.sin(this.sway) * 10;
+
+    if(this.shake > 0){
+        x += Math.random() * this.shake * 4 - this.shake * 2;
+        z += Math.random() * this.shake * 4 - this.shake * 2;
+    }
+    this.camHolder.position.x = x;
+    this.camHolder.position.z = z;
+    this.camera.lookAt(this.cameraTarget);
+    this.shake -=dt;
 };
 
 GameObjectController.prototype.checkHits = function () {
@@ -80,6 +90,7 @@ GameObjectController.prototype.checkHits = function () {
             this.baddies[i].hit(1);
 
             //TODO: avatar take a hit.
+            this.shake = 0.5;
             this.avatar.hp--;
             if( this.avatar.hp == 0 ) {
                 this.main.operations.push(function(game) {
@@ -100,6 +111,8 @@ GameObjectController.prototype.spawnDieParticles = function (baddie) {
     var i;
     var particle;
 
+    this.shake += 0.1;
+
     for (i = 0; i < 10; i++) {
         particle = new Particle(baddie.pos.clone(), baddie.color, baddie.wireColor, baddie.size, 1.0, 200);
         this.particles.push(particle);
@@ -110,6 +123,8 @@ GameObjectController.prototype.spawnDieParticles = function (baddie) {
 GameObjectController.prototype.spawnBossHitParticles = function () {
     var i;
     var particle;
+
+    this.shake = 2.0;
 
     for (i = 0; i < 50; i++) {
         particle = new Particle(this.boss.pos.clone(), this.boss.color, this.boss.wireColor, this.boss.size, 3.0, 1000);
