@@ -30,6 +30,12 @@ function GameObjectController(main) {
     this.sway = 0;
     this.shake = 0;
     //Howler.mute();
+
+    this.enabledKeys = []
+    for( var i = 0; i < 5; i++ ) {
+        if( i < 3 ) this.enabledKeys.push( true );
+        else this.enabledKeys.push( false );  // 4th & 5th keys disabled at first
+    }
 }
 
 GameObjectController.prototype.update = function () {
@@ -216,6 +222,8 @@ GameObjectController.prototype.checkInput = function () {
 };
 
 GameObjectController.prototype.attack = function (type) {
+    if( this.enabledKeys[type] == false ) return;
+
     if(this.nextChain != null){
         //already in a chain, attack next one.
         if( type == this.nextChain.type ){
@@ -315,4 +323,9 @@ GameObjectController.prototype.bossMove = function (pos) {
 GameObjectController.prototype.bossHide = function () {
     //TODO: spawn some particles n shit because that mofo' 'spacejumped'
     this.main.state.scene.remove(this.boss.holder);
+};
+
+GameObjectController.prototype.enableKey = function (key) {
+    this.enabledKeys[key] = true;
+    // maybe fuck with UI controller here (to add to HUD)
 };
