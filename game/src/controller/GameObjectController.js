@@ -76,7 +76,7 @@ GameObjectController.prototype.spawnChainParticles = function (baddie) {
     var particle;
 
     for (i = 0; i < 5; i++) {
-        particle = new Particle(baddie.pos.clone(), 0x000000, baddie.wireColor, baddie.size, 1.0, 200);
+        particle = new Particle(baddie.pos.clone(), 0x000000, 0x000000, baddie.size, 1.0, 200);
         this.particles.push(particle);
         this.main.add(particle);
     }
@@ -170,7 +170,6 @@ GameObjectController.prototype.attack = function (type) {
         // TODO: didn't hit anything.. penalize player.
     }
 };
-
 
 GameObjectController.prototype.hitBaddie = function (baddie) {
     baddie.hit(1);

@@ -1,7 +1,8 @@
-function Baddie(pos, type, size) {
+function Baddie(pos, size, type, shape) {
     //
     this.target = new GameObject();
     this.type = type;
+    this.shape = shape;
 
     this.size = size;
     this.score = Math.round(this.size);
@@ -29,8 +30,21 @@ function Baddie(pos, type, size) {
             break;
     }
 
+    var geom;
 
-    GameObject.call(this, new THREE.CubeGeometry(this.size, this.size, this.size), color);
+    switch(this.shape){
+        case 0:
+            geom = new THREE.TetrahedronGeometry(this.size);
+            break;
+        case 1:
+            geom = new THREE.CubeGeometry(this.size, this.size, this.size, 1);
+            break;
+        case 2:
+            geom = new THREE.OctahedronGeometry(this.size, 1)
+            break;
+    }
+
+    GameObject.call(this, geom, color);
 
     this.linkMat = new THREE.LineBasicMaterial({ color: 0xffffff });
     var linkGeom = new THREE.Geometry();
