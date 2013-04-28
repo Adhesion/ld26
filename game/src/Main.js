@@ -10,6 +10,46 @@ window.requestAnimFrame = (function(){
 	};
 })();
 
+var Shaders = {
+	DotShader : {
+		uniforms: {
+			"tDiffuse": { type: "t", value: null },
+			"tSize":    { type: "v2", value: new THREE.Vector2( 256, 256 ) },
+			"center":   { type: "v2", value: new THREE.Vector2( 0.5, 0.5 ) },
+			"angle":    { type: "f", value: 1.57 },
+			"scale":    { type: "f", value: 1.0 }
+		},
+		vertexShader: [
+			"varying vec2 vUv;",
+			"void main() {",
+				"vUv = uv;",
+				"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+			"}"
+		].join("\n"),
+		fragmentShader: [
+			"uniform vec2 center;",
+			"uniform float angle;",
+			"uniform float scale;",
+			"uniform vec2 tSize;",
+			"uniform sampler2D tDiffuse;",
+			"varying vec2 vUv;",
+
+			"float pattern() {",
+				"float s = sin( angle ), c = cos( angle );",
+				"vec2 tex = vUv * tSize - center;",
+				"vec2 point = vec2( c * tex.x - s * tex.y, s * tex.x + c * tex.y ) * scale;",
+				"return ( sin( point.x ) * sin( point.y ) ) * 4.0;",
+			"}",
+
+			"void main() {",
+				"vec4 color = texture2D( tDiffuse, vUv );",
+				"float average = ( color.r + color.g + color.b ) / 3.0;",
+				"gl_FragColor = vec4( vec3( average * 10.0 - 5.0 + pattern() ), color.a );",
+			"}"
+		].join("\n")
+	}
+}
+
 function Loader() {
 	this.assets = {};
 };
@@ -81,11 +121,20 @@ Loader.prototype.get = function( name ) {
 
 /** The main game object. Houses renderer, gamestate, etc. */
 function Main() {
+	var self = this;
 	this.renderer = new THREE.WebGLRenderer({
 		antialias: true
 	});
 	this.controllers = [];
 	this.callback = this.update.bind( this );
+
+	this.settings = {};
+	window.location.href.replace(
+		/[?&]+([^=&]+)=([^&]*)/gi,
+		function(m,key,value) {
+			self.settings[key] = value;
+		}
+	);
 
 	this.container = document.createElement('div');
 	this.container.setAttribute('class', 'game');
@@ -237,6 +286,17 @@ GameState.prototype.onStart = function( game ) {
 		this.goController,
 		this.uiController
 	);
+
+	if( game.settings.composer ) {
+		this.composer = new THREE.EffectComposer( game.renderer );
+		this.composer.addPass( new THREE.RenderPass( this.scene, this.camera ) );
+
+		var effect = new THREE.ShaderPass( Shaders.DotShader );
+		effect.uniforms[ 'scale' ].value = 4;
+		effect.renderToScreen = true;
+		this.composer.addPass( effect );
+		// more passes?
+	}
 }
 
 GameState.prototype.onStop = function( game ) {
@@ -247,10 +307,13 @@ GameState.prototype.onStop = function( game ) {
 
 GameState.prototype.render = function( game ) {
 	game.renderer.clear();
-	game.renderer.render( this.scene, this.camera );
-	if( this.uiController ) {
-		game.renderer.render( this.uiController.scene, this.uiController.camera );
+	if( game.settings.composer ) {
+		this.composer.render();
 	}
+	else {
+		game.renderer.render( this.scene, this.camera );
+	}
+	game.renderer.render( this.uiController.scene, this.uiController.camera );
 }
 
 function Intro() {
