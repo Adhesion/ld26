@@ -23,6 +23,8 @@ function GameObjectController(main) {
 }
 
 GameObjectController.prototype.update = function () {
+    TWEEN.update();
+    
     this.checkInput();
     var dt = 1/60;
 
@@ -199,15 +201,25 @@ GameObjectController.prototype.breakChain = function () {
 };
 
 GameObjectController.prototype.moveCamera = function (pos, target) {
-    this.camera.position = pos;
-    this.cameraTarget = target;
-    this.camera.lookAt(this.cameraTarget);
+    //this.camera.position = pos;
+    //this.cameraTarget = target;
+    //this.camera.lookAt(this.cameraTarget);
+
+    new TWEEN.Tween(this.camera.position)
+        .to({x: pos.x, y: pos.y, z:pos.z}, 1000);
+
+    new TWEEN.Tween(this.cameraTarget)
+        .to({x: target.x, y: target.y, z:target.z}, 1000);
 };
 
 GameObjectController.prototype.defaultCamera = function () {
-    this.camera.position.x = 0;
-    this.camera.position.y = -200;
-    this.camera.position.z = 200;
-    this.cameraTarget = new THREE.Vector3();
-    this.camera.lookAt(this.cameraTarget);
+    //this.camera.position.x = 0;
+    //this.camera.position.y = -200;
+    //this.camera.position.z = 200;
+    //this.cameraTarget = new THREE.Vector3();
+    //this.camera.lookAt(this.cameraTarget);
+
+    new TWEEN.Tween(this.camera.position).to({x: 0, y: -200, z:200}, 1000).start();
+
+    new TWEEN.Tween(this.cameraTarget).to({x: 0, y:0, z:0}, 1000).start();
 };
