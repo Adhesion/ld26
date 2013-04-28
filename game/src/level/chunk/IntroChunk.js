@@ -41,7 +41,7 @@ IntroChunk.prototype.build = function() {
         {time:15.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(0,800,0), 10, 0, 0) ) } },
 
         // reset camera to default position. (time)
-        {time:17.0, action:function(game){ game.defaultCamera(), 1.5 } },
+        {time:17.0, action:function(game){ game.defaultCamera(1.5)} },
 
         // this is an easy way to add 'padding' to the end of a chunk
         {time:18.0, action:function(game){ }}
