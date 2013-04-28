@@ -18,17 +18,35 @@ Loader.prototype.load = function( assets ) {
 	var self = this;
 	for( var i = 0; i < assets.length; i ++ ) {
 		var asset = assets[i];
-		var image = THREE.ImageUtils.loadTexture(
-			asset.name,
-			undefined,
-			function( image ) {
-				self.assets[image.name] = image;
-			},
-			function( error ) {
-				console.error( error );
+		if( asset.type == 'img' ) {
+			var image = THREE.ImageUtils.loadTexture(
+				asset.name,
+				undefined,
+				function( image ) {
+					self.assets[image.name] = image;
+				},
+				function( error ) {
+					console.error( error );
+				}
+			);
+			image.name = asset.name;
+		}
+		else if( asset.type == 'audio' ) {
+			var settings = {};
+			var audio;
+			settings.name = asset.name;
+			if( asset.volume ) settings.volume = asset.volume;
+			if( asset.buffer ) settings.buffer = asset.buffer;
+			settings.urls = asset.urls;
+			settings.onload = function( ) {
+				self.assets[this.hack_asset_name] = this;
+				if( this.hack_callback )
+					this.hack_callback( this );
 			}
-		);
-		image.name = asset.name;
+			audio = new Howl( settings );
+			audio.hack_asset_name = asset.name;
+			audio.hack_callback = asset.callback;
+		}
 	}
 };
 
@@ -65,22 +83,6 @@ function Main() {
 	document.body.appendChild(this.container);
 	window.onresize = this.resize.bind( this );
 
-    // hacky sound shit
-    window.song = new Howl({
-        urls: ['sound/ld26.mp3', 'sound/ld26.ogg'],
-        volume: 0.9,
-        buffer: true
-    }).play();
-
-    window.hitSounds = [];
-
-    for( var i = 0; i < 15; i++ ) {
-        window.hitSounds.push(new Howl({
-            urls: ['sound/hit' + i + '.mp3', 'sound/hit' + i + '.ogg'],
-            volume: 0.3
-        }));
-        console.log('hit' + i + '.mp3');
-    }
 
 	this.loader = new Loader();
 	this.loader.load( this.getAssets() );
@@ -102,7 +104,39 @@ Main.prototype.tryToStart = function() {
 };
 
 Main.prototype.getAssets = function() {
+	var hitAsset = function( base ) {
+		return {
+			name: "sound/hit" + base,
+			volume: 0.3,
+			urls: [
+				"sound/hit" + base + ".mp3",
+				"sound/hit" + base + ".ogg"
+			],
+			type: 'audio',
+			callback: function( audio ) {
+				window.hitSounds = window.hitSounds || [];
+				window.hitSounds[base] = audio;
+			}
+		};
+	};
+
 	return [
+		{ name: "sound/ld26", urls: ['sound/ld26.mp3', 'sound/ld26.ogg'], type: 'audio', volume: 0.9, buffer: true },
+		hitAsset( 0 ),
+		hitAsset( 1 ),
+		hitAsset( 2 ),
+		hitAsset( 3 ),
+		hitAsset( 4 ),
+		hitAsset( 5 ),
+		hitAsset( 6 ),
+		hitAsset( 7 ),
+		hitAsset( 8 ),
+		hitAsset( 9 ),
+		hitAsset( 10 ),
+		hitAsset( 11 ),
+		hitAsset( 12 ),
+		hitAsset( 13 ),
+		hitAsset( 14 ),
 		{ name: 'assets/intro/intro_bg.png', type: 'img', },
 		{ name: 'assets/intro/intro_glasses1.png', type: 'img' },
 		{ name: 'assets/intro/intro_glasses2.png', type: 'img' },
@@ -170,6 +204,9 @@ GameState.prototype.resize = function( width, height ) {
 GameState.prototype.onStart = function( game ) {
 	console.log( "Starting game state!" );
 	this.game = game;
+
+	game.loader.get("sound/ld26").play();
+
 	game.camera = new THREE.PerspectiveCamera(
 		60,
 		window.innerWidth / window.innerHeight,
