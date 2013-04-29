@@ -143,6 +143,9 @@ function Main() {
 	window.onresize = this.resize.bind( this );
 
 	window.main = this;
+    window.game_score = 0;
+    window.game_win = false;
+
 	this.loader = new Loader();
 	this.loader.load( this.getAssets() );
 	this.tryToStart();
@@ -249,6 +252,8 @@ Main.prototype.getAssets = function() {
 
         { name: 'assets/models/boss_body.js', type: 'model' },
         { name: 'assets/models/boss_spikes.js', type: 'model' },
+        { name: 'assets/models/boss_thinRing.js', type: 'model' },
+        { name: 'assets/models/boss_fatRing.js', type: 'model' }
 	];
 };
 
@@ -270,7 +275,8 @@ Main.prototype.resize = function (event) {
 };
 
 Main.prototype.update = function () {
-	var op;
+    TWEEN.update();
+    var op;
 	while( op = this.operations.pop() ) {
 		op(this);
 	}
@@ -451,7 +457,7 @@ function IntroController( game, camera, scene ) {
 	document.onkeypress = function( e ) {
 		if( e.keyCode == 13 ) {
 			game.operations.push(function() {
-				game.setState( new GameState() );
+				game.setState( new Splash() );
 			});
 		}
 	};
@@ -520,6 +526,12 @@ IntroController.prototype.update = function( dt ) {
 		this.cy - 28 / 2 + 80, 0
 	);
 
+    var game = this.game;
+    if(this.counter > 5000){
+        game.operations.push(function() {
+            game.setState( new Splash() );
+        });
+    }
 }
 
 function GameOver() {
@@ -531,15 +543,23 @@ GameOver.prototype.render = function( game ) {
 
 GameOver.prototype.onStart = function( game ) {
 	this.game = game;
-	this.scene = new THREE.Scene();
-	this.camera = new THREE.OrthographicCamera(
-		0,
-		window.innerWidth,
-		0,
-		window.innerHeight
-	);
-	this.controller = new GameOverController( game, this.camera, this.scene );
-	game.controllers.push( this.controller );
+    this.scene = new THREE.Scene();
+    this.scene.fog = new THREE.Fog( 0x2e2e2e, 1, 2000 );
+    this.scene.add( new THREE.AmbientLight( 0x222222 ) );
+    this.game.renderer.setClearColor( 0x2e2e2e, 1 );
+
+    this.camera = new THREE.PerspectiveCamera(
+        60,
+        window.innerWidth / window.innerHeight,
+        1,
+        10000
+    );
+
+    this.camera.position.z = 100;
+    this.camera.lookAt( new THREE.Vector3() );
+
+    this.controller = new SplashController( game, this.camera, this.scene, true );
+    game.controllers.push( this.controller );
 
     if(window.game_win == true){
         game.loader.get("sound/gameover-win").play();
@@ -565,24 +585,149 @@ GameOver.prototype.onStop = function( game) {
 	game.controllers = [];
 };
 
-function GameOverController( game, camera, scene ) {
-	this.game = game;
 
-	this.cx = camera.right / 2;
-	this.cy = camera.bottom / 2;
 
-	var bgMaterial = new THREE.SpriteMaterial({
-		map: this.game.loader.get( "assets/gameover/gameover.png" ),
-		useScreenCoordinates: true,
-		alignment: THREE.SpriteAlignment.topLeft
-	});
+function Splash() {
+}
 
-	this.bgSprite = new THREE.Sprite( bgMaterial );
-	this.bgSprite.scale.set( 800, 600, 1 );
+Splash.prototype.render = function( game ) {
+    game.renderer.render(this.scene, this.camera);
+}
 
-	this.counter = 0;
+Splash.prototype.onStart = function( game ) {
+    this.game = game;
+    this.scene = new THREE.Scene();
+    this.scene.fog = new THREE.Fog( 0x2e2e2e, 1, 2000 );
+    this.scene.add( new THREE.AmbientLight( 0x222222 ) );
+    this.game.renderer.setClearColor( 0x2e2e2e, 1 );
 
-	scene.add( this.bgSprite );
+    this.camera = new THREE.PerspectiveCamera(
+        60,
+        window.innerWidth / window.innerHeight,
+        1,
+        10000
+    );
+
+    this.camera.position.z = 100;
+    this.camera.lookAt( new THREE.Vector3() );
+
+    this.controller = new SplashController( game, this.camera, this.scene, false);
+    game.controllers.push( this.controller );
+
+    game.loader.get("sound/intro").play();
+
+};
+
+Splash.prototype.resize = function( width, height ) {
+    this.camera.right = width;
+    this.camera.bottom = height;
+    this.camera.updateProjectionMatrix();
+
+    this.controller.resize( width, height );
+}
+
+Splash.prototype.onStop = function( game) {
+    game.loader.get("sound/intro").stop();
+
+    this.controller.onStop();
+    game.controllers = [];
+};
+
+function SplashController( game, camera, scene, isGameover ) {
+    this.game = game;
+
+    this.camera = camera;
+
+    this.sway = 0;
+
+    this.cx = camera.right / 2;
+    this.cy = camera.bottom / 2;
+
+    var bgMaterial = new THREE.SpriteMaterial({
+        map: this.game.loader.get( "assets/gameover/gameover.png" ),
+    });
+
+    this.bgSprite = new THREE.Sprite( bgMaterial );
+    this.bgSprite.scale.set( 20, 20, 1 );
+
+    this.counter = 0;
+
+    var text = window.main.loader.get("assets/models/tessitron_text.js");
+    var logo = window.main.loader.get("assets/models/tessitron_logo.js");
+    var tmat = new THREE.MeshPhongMaterial( { color: 0xffffff, shading: THREE.FlatShading  } );
+    var lmat = new THREE.MeshPhongMaterial( { color: 0xf2e85c, shading: THREE.FlatShading  } );
+
+    this.lm = new THREE.Mesh(logo, lmat);
+    this.lm.rotation. x = Math.PI / 2;
+
+    this.tm = new THREE.Mesh(text, tmat);
+    this.tm.position.x = -65;
+    this.tm.scale = new THREE.Vector3(2,2,2);
+
+    this.textMesh = new THREE.Object3D();
+    this.textMesh.add(this.tm);
+    this.textMesh.position.y = -30;
+    this.textMesh.position.z = 120;
+
+    this.logoMesh = new THREE.Object3D();
+    this.logoMesh.add(this.lm);
+    this.logoMesh.position.y = 50;
+    this.logoMesh.position.z = 120;
+
+
+    new TWEEN.Tween(this.logoMesh.position).easing(TWEEN.Easing.Quadratic.Out).to({x: 0, y: 20, z:0}, 1.0*1000).start();
+    new TWEEN.Tween(this.textMesh.position).easing(TWEEN.Easing.Quadratic.Out).to({x: 0, y: -5, z:0}, 1.5*1000).start();
+
+    this.stars = [];
+
+    this.starHolder = new THREE.Object3D();
+    this.starHolder.rotation.x = Math.PI/2;
+
+    for( var i=0; i<100; i++){
+        var star = new Star();
+        this.stars.push(star);
+        this.starHolder.add(star.holder);
+    }
+
+    var scoreText = "" + window.game_score;
+    var textGeom = new THREE.TextGeometry( scoreText,
+        {
+            size: 20, height: 4, curveSegments: 4,
+            font: "helvetiker", style: "normal"
+        });
+
+    this.scoreMesh = new THREE.Mesh(textGeom, tmat );
+    textGeom.computeBoundingBox();
+    var textWidth = textGeom.boundingBox.max.x - textGeom.boundingBox.min.x;
+    this.scoreMesh.position.set( -0.5 * textWidth, -40, 120 );
+
+
+    new TWEEN.Tween(this.scoreMesh.position).easing(TWEEN.Easing.Quadratic.Out).to({x: -0.5 * textWidth, y: -15, z:0}, 1.5*1000).start();
+
+    if(isGameover) scene.add(this.scoreMesh);
+    else scene.add( this.textMesh );
+
+
+    scene.add( this.bgSprite );
+    scene.add( this.logoMesh );
+    scene.add( this.starHolder );
+
+    this.light1= new THREE.PointLight( 0xffffff, 1, 3000 );
+    this.light1.position.set( 1000, 0, 0 );
+
+    this.light2= new THREE.PointLight( 0xffffff, 2, 3000 );
+    this.light2.position.set( 0, 1000, 0 );
+
+    this.light3= new THREE.PointLight( 0xffffff, 1, 3000 );
+    this.light3.position.set( 0, 0, 1000 );
+
+    this.light4= new THREE.PointLight( 0xffffff, 1, 3000 );
+    this.light4.position.set( 0, -1000, 0 );
+
+    scene.add( this.light1 );
+    scene.add( this.light2 );
+    scene.add( this.light3 );
+    scene.add( this.light4 );
 
     document.onkeypress = function( e ) {
         if( e.keyCode == 13 ) {
@@ -591,22 +736,53 @@ function GameOverController( game, camera, scene ) {
             });
         }
     };
+
+    this.blink = 0;
+
+    this.resize( window.innerWidth, window.innerHeight );
 }
 
-GameOverController.prototype.resize = function( width, height ) {
-	this.cx = width / 2;
-	this.cy = height / 2;
+SplashController.prototype.resize = function( width, height ) {
+    this.cx = width / 2;
+    this.cy = height / 2;
+
+
+    this.camera.aspect = width / height;
+    this.camera.updateProjectionMatrix();
 }
 
-GameOverController.prototype.onStop = function() {
+SplashController.prototype.onStop = function() {
 
     document.onkeypress = function( e ) {
     };
 }
 
-GameOverController.prototype.update = function( dt ) {
-	this.counter += dt;
+SplashController.prototype.update = function( dt ) {
+    this.counter += dt;
 
-	this.bgSprite.position.set( this.cx - 800/2, this.cy - 600/2, 0 );
+
+    this.sway += dt * 0.5 / 1000;
+    if( this.sway > Math.PI * 2) this.sway -= Math.PI*2;
+
+
+    this.logoMesh.rotation.x = this.sway;
+    this.logoMesh.rotation.y = this.sway;
+    this.logoMesh.rotation.z = this.sway;
+
+    this.camera.position.x = Math.cos(this.sway) * 10;
+    this.camera.position.y = Math.sin(this.sway) * 10;
+    this.camera.lookAt(new THREE.Vector3());
+
+    this.bgSprite.position.set( this.cx, this.cy + 150, 0 );
+    this.bgSprite.material.opacity = Math.round( this.blink );
+
+    for( var i=0; i<this.stars.length; i++){
+        this.stars[i].update(dt/1000);
+    }
+
+
+    this.blink += dt/1000 * 2;
+    if(this.blink > 1 ) this.blink = 0;
+
 }
 

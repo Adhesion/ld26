@@ -3,7 +3,7 @@ function SauceBoss() {
     this.target = new THREE.Vector3();
     this.size = 100;
     //GameObject.call(this, new THREE.OctahedronGeometry(this.size, 2), 0xff0000);
-    GameObject.call(this,window.main.loader.get("assets/models/boss_body.js"), 0xff0000);
+    GameObject.call(this,window.main.loader.get("assets/models/boss_body.js"), 0xf53d54, 0xf2e85c);
     this.holder.scale = new THREE.Vector3( 15.0, 15.0, 15.0 );
 
     this.linkMat = new THREE.LineBasicMaterial({ color: 0xffffff });
@@ -11,6 +11,23 @@ function SauceBoss() {
     linkGeom.vertices.push(new THREE.Vector3(0, 0, 0));
     linkGeom.vertices.push(new THREE.Vector3(0, 0, 0));
     this.link = new THREE.Line(linkGeom, this.linkMat, THREE.LineStrip);
+
+
+    var sg = window.main.loader.get("assets/models/boss_spikes.js");
+    var sm = new THREE.MeshPhongMaterial( { color: 0x04bf9d, shading: THREE.FlatShading  } );
+    this.spikes = new THREE.Mesh(sg, sm);
+
+    var rg1 = window.main.loader.get("assets/models/boss_thinRing.js");
+    var rm1 = new THREE.MeshPhongMaterial( { color: 0x2e6fac, shading: THREE.FlatShading  } );
+    this.ring1 = new THREE.Mesh(rg1, rm1);
+
+    var rg2 = window.main.loader.get("assets/models/boss_fatRing.js");
+    var rm2 = new THREE.MeshPhongMaterial( { color: 0x9572c0, shading: THREE.FlatShading  } );
+    this.ring2 = new THREE.Mesh(rg2, rm2);
+
+    this.holder.add(this.spikes);
+    this.holder.add(this.ring1);
+    this.holder.add(this.ring2);
 
     this.pos = new THREE.Vector3();
 
@@ -50,10 +67,17 @@ SauceBoss.prototype.update = function (dt) {
 
     this.seekTarget(dt);
 
-    this.solid.rotation.x += 0.025;
-    this.solid.rotation.y += 0.025;
-    this.wire.rotation.x -= 0.025;
-    this.wire.rotation.y -= 0.025;
+    this.rotation.x += 0.025;
+    this.rotation.y += 0.025;
+
+    this.ring1.rotation.y += 0.02;
+    this.ring1.rotation.z -= 0.02;
+
+    this.ring2.rotation.x -= 0.05;
+    this.ring2.rotation.y -= 0.05;
+
+    this.spikes.rotation.x += 0.025;
+    this.spikes.rotation.z -= 0.025;
 
     GameObject.prototype.update.call(this, dt);
 };

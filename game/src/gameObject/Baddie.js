@@ -5,7 +5,7 @@ function Baddie(pos, size, note) {
     this.type = note % 5;
     this.shape = Math.floor(note / 5);
 
-    this.size = size * 2;
+    this.size = size;
     this.score = Math.round(this.size);
 
     this.child = null;

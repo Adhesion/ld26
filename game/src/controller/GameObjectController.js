@@ -1,7 +1,7 @@
 function GameObjectController(main) {
 
 
-    Howler.mute();
+    //Howler.mute();
 
     this.missfireCounter = 0;
     this.missfireCounterMax = 2.0;
@@ -29,7 +29,7 @@ function GameObjectController(main) {
     this.chain = [];
 
     this.main.state.scene.add(this.avatar.holder);
-    this.main.state.scene.fog = new THREE.Fog( 0x000000, 1, 2000 );
+    this.main.state.scene.fog = new THREE.Fog( 0x2e2e2e, 1, 2000 );
 
     this.boss = new SauceBoss();
 
@@ -66,11 +66,10 @@ function GameObjectController(main) {
     window.game_win = false;
 }
 
-GameObjectController.prototype.update = function () {
-    TWEEN.update();
+GameObjectController.prototype.update = function (delta) {
 
     this.checkInput();
-    var dt = 1/60;
+    var dt = delta/1000;
 
     this.level.update(dt);
 
@@ -330,7 +329,6 @@ GameObjectController.prototype.hitBaddie = function (baddie, chain) {
                 this.main.loader.get( "sound/bosshit" ).play(); // temp
                 this.shake = 2.0;
             }else{
-                this.main.loader.get( "sound/bosshit" ).play(); // temp
                 this.main.loader.get( "sound/bossdeath" ).play(); // temp
                 this.shake = 5.0;
                 this.main.state.scene.remove(this.boss.holder);
@@ -368,8 +366,8 @@ GameObjectController.prototype.breakChain = function () {
 };
 
 GameObjectController.prototype.moveCamera = function (pos, target, time) {
-    new TWEEN.Tween(this.camera.position).to({x: pos.x, y: pos.y, z:pos.z}, time*1000).start();
-    new TWEEN.Tween(this.cameraTarget).to({x: target.x, y: target.y, z:target.z}, time*1000).start();
+    new TWEEN.Tween(this.camera.position).easing(TWEEN.Easing.Quadratic.InOut).to({x: pos.x, y: pos.y, z:pos.z}, time*1000).start();
+    new TWEEN.Tween(this.cameraTarget).easing(TWEEN.Easing.Quadratic.InOut).to({x: target.x, y: target.y, z:target.z}, time*1000).start();
 };
 
 GameObjectController.prototype.defaultCamera = function (time) {
