@@ -1,8 +1,8 @@
 function Star() {
-    GameObject.call(this, this.buildMesh(), 0xffffff, 0xffffff);
+    GameObject.call(this, this.buildMesh(), 0x262626, 0x262626);
     this.wire.scale = new THREE.Vector3(1, 1, 1);
-    this.wireMat.opacity = 0.25;
-    this.solidMat.opacity = 0.5;
+    //this.wireMat.opacity = 0.25;
+    //this.solidMat.opacity = 0.5;
 
     this.resetPos();
 
@@ -10,7 +10,8 @@ function Star() {
     this.vel.y = -2000;
     this.update();
 
-    this.solidMat.blending = THREE.AdditiveAlphaBlending;
+    //this.solidMat.blending = THREE.SubtractiveBlending;
+    //this.wireMat.blending = THREE.SubtractiveBlending;
 }
 
 Star.prototype = new GameObject();
@@ -33,7 +34,7 @@ Star.prototype.resetPos = function () {
 Star.prototype.buildMesh = function () {
     var geometry = new THREE.Geometry();
 
-    var w = 0.5;
+    var w = 1;
     var h = 200;
 
     geometry.vertices.push(new THREE.Vector3(0, h, 0));

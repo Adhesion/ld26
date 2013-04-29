@@ -3,6 +3,10 @@ function GameObjectController(main) {
 
     Howler.mute();
 
+    this.missfireCounter = 0;
+    this.missfireCounterMax = 2.0;
+    this.missfireActive = false;
+
     this.main = main;
     this.input = new Input();
 
@@ -66,6 +70,7 @@ GameObjectController.prototype.update = function () {
     this.checkInput();
     var dt = 1/60;
 
+
     this.level.update(dt);
 
     this.updateObjects(this.baddies, dt);
@@ -76,6 +81,27 @@ GameObjectController.prototype.update = function () {
     this.ambientCameraMovement(dt);
     //this.spawnBaddie(dt);
     this.checkHits();
+
+    this.avatar.hp += dt * 0.3;
+    if(this.avatar.hp > this.avatar.startHP) this.avatar.hp = this.avatar.startHP;
+
+    this.manageMissfire(dt);
+};
+
+
+GameObjectController.prototype.manageMissfire = function (dt) {
+    this.missfireCounter -= dt;
+
+    if(this.missfireActive){
+        if(this.missfireCounter <=0){
+            this.missfireActive = false;
+            this.avatar.missfire(false);
+        }
+    }else{
+
+    }
+
+    if(this.missfireCounter < 0)this.missfireCounter = 0;
 };
 
 
@@ -123,7 +149,7 @@ GameObjectController.prototype.checkHits = function () {
             this.main.loader.get( "sound/playerhit" + this.baddies[i].type).play();
 
             this.avatar.hp--;
-            if( this.avatar.hp == 0 ) {
+            if( this.avatar.hp <= 0 ) {
                 this.main.operations.push(function(game) {
                     game.setState( new GameOver() );
                 });
@@ -244,6 +270,8 @@ GameObjectController.prototype.checkInput = function () {
 };
 
 GameObjectController.prototype.attack = function (type) {
+    if(this.missfireActive == true)return;
+
     if( this.enabledKeys[type] == false ) return;
 
     if(this.nextChain != null){
@@ -269,8 +297,17 @@ GameObjectController.prototype.attack = function (type) {
                 }
             }
         }
-        // TODO: didn't hit anything.. penalize player.
-        this.main.loader.get( "sound/miss").play();
+
+        this.missfireCounter ++;
+
+        if(this.missfireCounter >= 3){
+            this.missfireCounter = this.missfireCounterMax;
+            this.missfireActive = true;
+            this.avatar.missfire(true);
+            this.main.loader.get( "sound/misfire").play();
+        }else{
+            this.main.loader.get( "sound/miss").play();
+        }
     }
 };
 

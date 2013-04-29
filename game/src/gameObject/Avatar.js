@@ -1,5 +1,5 @@
 function Avatar() {
-    GameObject.call(this, this.buildMesh(), 0xffffff, 0xffffff);
+    GameObject.call(this, this.buildMesh(), 0xf2e85c, 0xdbd14c);
 
     this.maxSpeed = 2;
     this.inputScale = 1;
@@ -7,9 +7,11 @@ function Avatar() {
     this.startHP = 10;
     this.hp = this.startHP;
 
+    this.missfireActive = false;
+
     this.range = 100;
 
-    this.rangeMat = new THREE.LineBasicMaterial({ color: 0xffffff });
+    this.rangeMat = new THREE.MeshBasicMaterial({ color:0xffffff, wireframe:true });
     var rangeGeom = new THREE.Geometry();
     var a = 0;
     var links = 10;
@@ -28,6 +30,16 @@ Avatar.prototype.constructor = Avatar;
 
 Avatar.prototype.update = function (dt) {
     GameObject.prototype.update.call(this, dt);
+
+    if(this.missfireActive){
+        this.rangeMat.opacity = 0.25;
+    }else{
+        this.rangeMat.opacity = 1.0;
+    }
+};
+
+Avatar.prototype.missfire = function (active) {
+    this.missfireActive = active;
 };
 
 Avatar.prototype.fire = function () {
