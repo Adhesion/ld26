@@ -549,6 +549,14 @@ function GameOverController( game, camera, scene ) {
 	this.counter = 0;
 
 	scene.add( this.bgSprite );
+
+    document.onkeypress = function( e ) {
+        if( e.keyCode == 13 ) {
+            game.operations.push(function() {
+                game.setState( new GameState() );
+            });
+        }
+    };
 }
 
 GameOverController.prototype.resize = function( width, height ) {
@@ -557,6 +565,9 @@ GameOverController.prototype.resize = function( width, height ) {
 }
 
 GameOverController.prototype.onStop = function() {
+
+    document.onkeypress = function( e ) {
+    };
 }
 
 GameOverController.prototype.update = function( dt ) {
