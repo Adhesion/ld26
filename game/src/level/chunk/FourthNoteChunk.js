@@ -15,9 +15,10 @@ FourthNoteChunk.prototype.constructor = IntroChunk;
 FourthNoteChunk.prototype.build = function() {
     this.items = [
         // camera Vector3 pos, Vector3 target default is (0,-200, 200) --> (0,0,0)
+        {time:0.0, action:function(game){ game.enableKey(3) } },
+       
         {time:2.0, action:function(game){ game.moveCamera(new THREE.Vector3(-100,-100, 170), new THREE.Vector3(80,-50,0), 1.0) } },
 
-		{time:4.0, action:function(game){ game.enableKey(3) } },
         {time:4.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(800,0,0), 5, 8) ) } },
 
         {time:6.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(800,-150,0), 5, 5) ) } },
