@@ -184,11 +184,15 @@ Main.prototype.getAssets = function() {
 	return [
 		{ name: "sound/radmarslogo", urls: ['sound/radmarslogo.mp3', 'sound/radmarslogo.ogg'], type: 'audio', volume: 0.9, buffer: true },
 		{ name: "sound/ld26", urls: ['sound/ld26.mp3', 'sound/ld26.ogg'], type: 'audio', volume: 0.95, buffer: true },
-		{ name: "sound/bosshit", urls: ['sound/bosshit.mp3', 'sound/bosshit.ogg'], type: 'audio', volume: 0.45, buffer: true },
+		{ name: "sound/bosshit", urls: ['sound/bosshit.mp3', 'sound/bosshit.ogg'], type: 'audio', volume: 0.5, buffer: true },
 		{ name: "sound/bossdeath", urls: ['sound/bossdeath.mp3', 'sound/bossdeath.ogg'], type: 'audio', volume: 0.9, buffer: true },
 		{ name: "sound/miss", urls: ['sound/miss.mp3', 'sound/miss.ogg'], type: 'audio', volume: 0.4, buffer: true },
 		{ name: "sound/misfire", urls: ['sound/misfire.mp3', 'sound/misfire.ogg'], type: 'audio', volume: 0.5, buffer: true },
-		hitAsset( 0 ),
+        { name: "sound/gameover-lose", urls: ['sound/gameover-lose.mp3', 'sound/gameover-lose.ogg'], type: 'audio', volume: 0.9, buffer: true },
+        { name: "sound/gameover-win", urls: ['sound/gameover-win.mp3', 'sound/gameover-win.ogg'], type: 'audio', volume: 0.9, buffer: true },
+        { name: "sound/intro", urls: ['sound/intro.mp3', 'sound/intro.ogg'], type: 'audio', volume: 0.9, buffer: true },
+
+        hitAsset( 0 ),
 		hitAsset( 1 ),
 		hitAsset( 2 ),
 		hitAsset( 3 ),
