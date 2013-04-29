@@ -30,7 +30,6 @@ function GameObjectController(main) {
 
     this.sway = 0;
     this.shake = 0;
-    Howler.mute();
 
     this.light1= new THREE.PointLight( 0xffffff, 1, 3000 );
     this.light1.position.set( 1000, 0, 0 );
@@ -48,6 +47,7 @@ function GameObjectController(main) {
     this.main.state.scene.add( this.light2 );
     this.main.state.scene.add( this.light3 );
     this.main.state.scene.add( this.light4 );
+
     //Howler.mute();
 
     this.enabledKeys = []
