@@ -48,7 +48,7 @@ Particle.prototype.buildMesh = function (size) {
     geometry.vertices.push(new THREE.Vector3(-size * 0.5, size * 0.5, 0));
     geometry.vertices.push(new THREE.Vector3(0, -size * 0.5, 0));
 
-    geometry.faces.push(new THREE.Face3(0, 1, 2), new THREE.Face3(2, 1, 0));
+    geometry.faces.push(new THREE.Face3(0, 1, 2, new THREE.Vector3( 0, 0, 1 )), new THREE.Face3(2, 1, 0, new THREE.Vector3( 0, 0, -1 )));
 
     geometry.computeBoundingSphere();
 

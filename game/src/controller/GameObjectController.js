@@ -10,9 +10,9 @@ function GameObjectController(main) {
     this.camHolder = new THREE.Object3D();
     this.camHolder.add(this.camera);
     this.main.state.scene.add(this.camHolder);
+    this.main.state.scene.add( new THREE.AmbientLight( 0x222222 ) );
 
     this.avatar = new Avatar();
-    this.baddieSpawnRate = this.baddieSpawnCount = 1.0;
 
     this.particles = [];
     this.baddies = [];
@@ -21,6 +21,7 @@ function GameObjectController(main) {
     this.chain = [];
 
     this.main.state.scene.add(this.avatar.holder);
+    this.main.state.scene.fog = new THREE.Fog( 0x000000, 1, 2000 );
 
     this.boss = new SauceBoss();
 
@@ -29,7 +30,25 @@ function GameObjectController(main) {
 
     this.sway = 0;
     this.shake = 0;
-    //Howler.mute();
+
+    Howler.mute();
+
+    this.light1= new THREE.PointLight( 0xffffff, 1, 3000 );
+    this.light1.position.set( 1000, 0, 0 );
+
+    this.light2= new THREE.PointLight( 0xffffff, 2, 3000 );
+    this.light2.position.set( 0, 1000, 0 );
+
+    this.light3= new THREE.PointLight( 0xffffff, 1, 3000 );
+    this.light3.position.set( 0, 0, 1000 );
+
+    this.light4= new THREE.PointLight( 0xffffff, 1, 3000 );
+    this.light4.position.set( 0, -1000, 0 );
+
+    this.main.state.scene.add( this.light1 );
+    this.main.state.scene.add( this.light2 );
+    this.main.state.scene.add( this.light3 );
+    this.main.state.scene.add( this.light4 );
 }
 
 GameObjectController.prototype.update = function () {

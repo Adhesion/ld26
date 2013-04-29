@@ -1,14 +1,16 @@
 function GameObject(geometry, color, wireColor) {
     this.wireColor = wireColor ? wireColor : 0xffffff;
-    this.color = color ? color : 0xff0000;
+    this.color = color ? color : 0xffffff;
 
     this.pos = new THREE.Vector3(0, 0, 0);
     this.vel = new THREE.Vector3(0, 0, 0);
     this.rotation = new THREE.Vector3(0, 0, 0);
 
-    this.solidMat = new THREE.MeshBasicMaterial({ color:this.color, transparent:true });
-    this.whiteMat = new THREE.MeshBasicMaterial({ color:0xffffff, transparent:true });
-    this.wireMat = new THREE.MeshBasicMaterial({ color:this.wireColor, wireframe:true, transparent:true });
+    this.solidMat = new THREE.MeshPhongMaterial( { color: this.color, transparent:true, shading: THREE.FlatShading  } );
+    this.whiteMat = new THREE.MeshPhongMaterial({ color:0xffffff, transparent:true, shading: THREE.FlatShading  });
+
+    this.wireMat = new THREE.MeshPhongMaterial({ color:this.wireColor, wireframe:true, shading: THREE.FlatShading  });
+
     this.wireMat.opacity = 0.75;
     this.wireMat.blending = THREE.AdditiveAlphaBlending;
 

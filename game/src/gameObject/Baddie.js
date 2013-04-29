@@ -5,7 +5,7 @@ function Baddie(pos, size, note) {
     this.type = note % 5;
     this.shape = Math.floor(note / 5);
 
-    this.size = size;
+    this.size = size * 2;
     this.score = Math.round(this.size);
 
     this.child = null;
@@ -17,19 +17,24 @@ function Baddie(pos, size, note) {
     var color;
     switch(this.type){
         case 0:
-            color = 0xff0000;
+            //red
+            color = 0xf53d54;
             break;
         case 1:
-            color = 0x00ff00;
+            //green
+            color = 0x04bf9d;
             break;
         case 2:
-            color = 0x0000ff;
+            //blue
+            color = 0x2e6fac;
             break;
         case 3:
-            color = 0xffff00;
+            //yellow
+            color = 0xf2e85c;
             break;
         case 4:
-            color = 0xff00ff;
+            //purpp
+            color = 0x9572c0;
             break;
     }
 
@@ -47,7 +52,7 @@ function Baddie(pos, size, note) {
             break;
     }
 
-    GameObject.call(this, geom, color);
+    GameObject.call(this, geom, color, color);
 
     this.linkMat = new THREE.LineBasicMaterial({ color: 0xffffff });
     var linkGeom = new THREE.Geometry();
@@ -74,7 +79,7 @@ Baddie.prototype.linkChild = function (baddie) {
 
 Baddie.prototype.disable = function () {
     this.active = false;
-    this.solid.scale = new THREE.Vector3(0.25, 0.25, 0.25);
+    this.solid.scale = new THREE.Vector3(0.5, 0.5, 0.5);
 };
 
 Baddie.prototype.enable = function () {

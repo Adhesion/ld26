@@ -40,7 +40,7 @@ Star.prototype.buildMesh = function () {
     geometry.vertices.push(new THREE.Vector3(-w, h* 0.5, 0));
     geometry.vertices.push(new THREE.Vector3(0, 0, 0));
 
-    geometry.faces.push(new THREE.Face3(0, 1, 2));
+    geometry.faces.push(new THREE.Face3(0, 1, 2, new  THREE.Vector3(0,0,1)));
 
     geometry.computeBoundingSphere();
 

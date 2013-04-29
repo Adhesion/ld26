@@ -1,5 +1,5 @@
 function Avatar() {
-    GameObject.call(this, this.buildMesh(), 0xffffff, 0xffff00);
+    GameObject.call(this, this.buildMesh(), 0xffffff, 0xffffff);
 
     this.maxSpeed = 2;
     this.inputScale = 1;
@@ -62,9 +62,11 @@ Avatar.prototype.buildMesh = function () {
     geometry.vertices.push(new THREE.Vector3(0, h, 0));
     geometry.vertices.push(new THREE.Vector3(-w, -h * 0.25, -d));
 
-    geometry.faces.push(new THREE.Face3(0, 1, 2), new THREE.Face3(3, 4, 5));
+
+    geometry.faces.push(new THREE.Face3(0, 1, 2, new THREE.Vector3( 0, 0, 1 )), new THREE.Face3(3, 4, 5, new THREE.Vector3( 0, 0, 1 )));
 
     geometry.computeBoundingSphere();
+
 
     return geometry;
 };
