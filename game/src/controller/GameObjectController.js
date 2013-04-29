@@ -1,7 +1,7 @@
 function GameObjectController(main) {
 
 
-    Howler.mute();
+   // Howler.mute();
 
     this.missfireCounter = 0;
     this.missfireCounterMax = 2.0;

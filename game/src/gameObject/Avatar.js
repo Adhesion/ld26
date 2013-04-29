@@ -4,7 +4,7 @@ function Avatar() {
     this.maxSpeed = 2;
     this.inputScale = 1;
     this.pos.y = -70;
-    this.startHP = 10;
+    this.startHP = 5;
     this.hp = this.startHP;
 
     this.missfireActive = false;
