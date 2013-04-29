@@ -186,7 +186,7 @@ UIController.prototype.updateCanvas = function(){
     context.fillStyle = 'white';
     context.textAlign = "right";
     context.textBaseline = "top";
-    context.fillText("" + this.displayScore, this.canvas.width-5, 0);
+    context.fillText("" + Math.floor(this.displayScore), this.canvas.width-5, 0);
 }
 
 

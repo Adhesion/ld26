@@ -10,6 +10,8 @@ function GameObjectController(main) {
     this.main = main;
     this.input = new Input();
 
+    this.combo = 0;
+
     this.camera = this.main.state.camera;
     this.camera.up = new THREE.Vector3( 0, 0, 1 );
     this.cameraTarget = new THREE.Vector3();
@@ -275,6 +277,7 @@ GameObjectController.prototype.attack = function (type) {
         }else{
             this.breakChain();
             // TODO: didn't hit anything.. penalize player.
+            this.combo = 0;
             this.main.loader.get( "sound/miss").play();
         }
     }else{
@@ -301,6 +304,7 @@ GameObjectController.prototype.attack = function (type) {
         }else{
             this.main.loader.get( "sound/miss").play();
         }
+        this.combo = 0;
     }
 };
 
@@ -345,16 +349,24 @@ GameObjectController.prototype.hitBaddie = function (baddie, chain) {
         }
     // last enemy in the chain
     } else if (chain) {
+
+         //TODO: add score popup particle
+        this.main.state.uiController.addScore(100 * this.chain.length * this.combo);
+
         this.nextChain = null;
         this.chain.push(baddie);
         this.breakChain();
         this.main.loader.get( "sound/chainhit" + baddie.type ).play();
+
     }
     // single enemy, no chain
     else {
         this.main.loader.get( "sound/hit" + baddie.note ).play();
     }
 
+    //TODO: add score popup particle
+    this.main.state.uiController.addScore(50+ 55* this.combo);
+    this.combo++;
     //TODO: add some score
 };
 
