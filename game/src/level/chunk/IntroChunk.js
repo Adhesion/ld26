@@ -21,8 +21,12 @@ IntroChunk.prototype.build = function() {
         // basic baddies: pos, size, note(0-14)
         
         {time:3.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(0,800,0), 5, 0) ) } },
+
+        //{time:4.5, action:function(game){ game.enableKey(3) } },
        
         {time:6.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(0,800,0), 5, 5) ) } },
+
+        //{time:7.5, action:function(game){ game.enableKey(4) } },
         
         {time:9.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(0,800,0), 5, 0) ) } },
         {time:10.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(0,800,0), 5, 5) ) } },

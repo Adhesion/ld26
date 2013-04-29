@@ -43,20 +43,32 @@ FourthNoteChunk.prototype.build = function() {
             new Baddie(new THREE.Vector3(50,800,0), 5, 7),
             new Baddie(new THREE.Vector3(0,850,0), 5, 6),
             new Baddie(new THREE.Vector3(50,850,0), 5, 8) ])}},
+        
+        {time:27.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(0,800,0), 5, 0) ) } },
+		{time:28.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(0,800,0), 5, 3) ) } },
+		{time:29.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(0,800,0), 5, 2) ) } },
             
-    	{time:26.0, action:function(game){ game.makeLinkedBaddies( [
+        {time:26.0, action:function(game){ game.makeLinkedBaddies( [
             new Baddie(new THREE.Vector3(-10,800,0), 5, 11),
             new Baddie(new THREE.Vector3(10,850,0), 5, 10),
             new Baddie(new THREE.Vector3(-10,900,0), 5, 7) ])}},
-            
-        {time:28.0, action:function(game){ game.makeLinkedBaddies( [
-            new Baddie(new THREE.Vector3(0,800,0), 5, 0),
-            new Baddie(new THREE.Vector3(10,850,0), 5, 3),
-            new Baddie(new THREE.Vector3(0,900,0), 5, 2),
-            new Baddie(new THREE.Vector3(-10,950,0), 5, 0),
-            new Baddie(new THREE.Vector3(0,1000,0), 5, 3),
-            new Baddie(new THREE.Vector3(10,1050,0), 5, 2),
-            new Baddie(new THREE.Vector3(0,1100,0), 5, 5) ])}},
+        
+        {time:33.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(0,800,0), 5, 5) ) } },
+		{time:34.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(0,800,0), 5, 6) ) } },
+		{time:35.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(0,800,0), 5, 7) ) } },
+        {time:36.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(0,800,0), 5, 8) ) } },
+		{time:37.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(0,800,0), 5, 7) ) } },
+		{time:38.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(0,800,0), 5, 6) ) } },
+		{time:39.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(0,800,0), 5, 5) ) } },
+        
+        {time:31.0, action:function(game){ game.makeLinkedBaddies( [
+            new Baddie(new THREE.Vector3(0,800,0), 10, 0),
+            new Baddie(new THREE.Vector3(10,850,0), 10, 3),
+            new Baddie(new THREE.Vector3(0,900,0), 10, 2),
+            new Baddie(new THREE.Vector3(-10,950,0), 10, 0),
+            new Baddie(new THREE.Vector3(0,1000,0), 10, 3),
+            new Baddie(new THREE.Vector3(10,1050,0), 10, 2),
+            new Baddie(new THREE.Vector3(0,1100,0), 10, 5) ])}},
         
         // pass game object controller, game.
         // basic baddies: pos, size, note(0-14)	

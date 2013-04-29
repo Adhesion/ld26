@@ -30,7 +30,6 @@ function GameObjectController(main) {
 
     this.sway = 0;
     this.shake = 0;
-
     Howler.mute();
 
     this.light1= new THREE.PointLight( 0xffffff, 1, 3000 );
@@ -49,6 +48,13 @@ function GameObjectController(main) {
     this.main.state.scene.add( this.light2 );
     this.main.state.scene.add( this.light3 );
     this.main.state.scene.add( this.light4 );
+    //Howler.mute();
+
+    this.enabledKeys = []
+    for( var i = 0; i < 5; i++ ) {
+        if( i < 3 ) this.enabledKeys.push( true );
+        else this.enabledKeys.push( false );  // 4th & 5th keys disabled at first
+    }
 }
 
 GameObjectController.prototype.update = function () {
@@ -235,6 +241,8 @@ GameObjectController.prototype.checkInput = function () {
 };
 
 GameObjectController.prototype.attack = function (type) {
+    if( this.enabledKeys[type] == false ) return;
+
     if(this.nextChain != null){
         //already in a chain, attack next one.
         if( type == this.nextChain.type ){
@@ -278,28 +286,28 @@ GameObjectController.prototype.hitBaddie = function (baddie, chain) {
             //TODO: attack boss, spawn particles n shit.
 
             this.spawnBossHitParticles();
-            window.hitSounds[baddie.note].play();
+            this.main.loader.get( "sound/hit" + baddie.note ).play();
             // TODO boss hit sound?
             // probably should just call boss.hit()?
             console.log("boss has been hit");
-            this.main.loader.get( "sound/bosshit").play(); // temp
+            this.main.loader.get( "sound/bosshit" ).play(); // temp
         }
         // regular enemy in chain
         else {
             this.nextChain = baddie.child;
             this.chain.push(baddie);
-            window.hitSounds[baddie.note].play();
+            this.main.loader.get( "sound/hit" + baddie.note ).play();
         }
     // last enemy in the chain
     } else if (chain) {
         this.nextChain = null;
         this.chain.push(baddie);
         this.breakChain();
-        window.hitSounds[baddie.note].play();
+        this.main.loader.get( "sound/hit" + baddie.note ).play();
     }
     // single enemy, no chain
     else {
-        window.hitSounds[baddie.note].play();
+        this.main.loader.get( "sound/hit" + baddie.note ).play();
     }
 
     //TODO: add some score
@@ -334,4 +342,9 @@ GameObjectController.prototype.bossMove = function (pos) {
 GameObjectController.prototype.bossHide = function () {
     //TODO: spawn some particles n shit because that mofo' 'spacejumped'
     this.main.state.scene.remove(this.boss.holder);
+};
+
+GameObjectController.prototype.enableKey = function (key) {
+    this.enabledKeys[key] = true;
+    // maybe fuck with UI controller here (to add to HUD)
 };
