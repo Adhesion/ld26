@@ -14,8 +14,9 @@ ChorusChunk.prototype.constructor = IntroChunk;
 
 ChorusChunk.prototype.build = function() {
     this.items = [
-        // camera Vector3 pos, Vector3 target default is (0,-200, 200) --> (0,0,0)
-        
+        {time:0.0, action:function(game){ game.enableKey(3) } },
+        {time:0.0, action:function(game){ game.enableKey(4) } },
+
         {time:2.0, action:function(game){ game.bossMove(new THREE.Vector3(700, 0, 0)) } },
         {time:2.0, action:function(game){ game.moveCamera(new THREE.Vector3( -300, 0, 200), new THREE.Vector3(500,0,0), 2.0) } },
         

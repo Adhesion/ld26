@@ -14,6 +14,7 @@ DenseChunk.prototype.constructor = IntroChunk;
 
 DenseChunk.prototype.build = function() {
     this.items = [
+        {time:0.0, action:function(game){ game.enableKey(3) } },
         // camera Vector3 pos, Vector3 target default is (0,-200, 200) --> (0,0,0)
         {time:2.0, action:function(game){ game.moveCamera(new THREE.Vector3(0,-200, 170), new THREE.Vector3(0,0,0), 1.0) } },
 

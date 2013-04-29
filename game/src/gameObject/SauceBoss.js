@@ -3,7 +3,7 @@ function SauceBoss() {
     this.target = new THREE.Vector3();
     this.size = 100;
     //GameObject.call(this, new THREE.OctahedronGeometry(this.size, 2), 0xff0000);
-    GameObject.call(this, geom = window.main.loader.get("assets/models/pyramid.js"), 0xff0000);
+    GameObject.call(this,window.main.loader.get("assets/models/boss_body.js"), 0xff0000);
     this.holder.scale = new THREE.Vector3( 15.0, 15.0, 15.0 );
 
     this.linkMat = new THREE.LineBasicMaterial({ color: 0xffffff });
@@ -13,10 +13,14 @@ function SauceBoss() {
     this.link = new THREE.Line(linkGeom, this.linkMat, THREE.LineStrip);
 
     this.pos = new THREE.Vector3();
-    this.hp = 10;
+
+    this.hp = this.startHP = 5;
+
     this.speed = 150;
 
     this.update(0);
+
+    this.active = false;
 }
 
 SauceBoss.prototype = new GameObject();

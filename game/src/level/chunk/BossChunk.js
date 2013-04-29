@@ -14,8 +14,9 @@ BossChunk.prototype.constructor = IntroChunk;
 
 BossChunk.prototype.build = function() {
     this.items = [
-        
+        {time:0.0, action:function(game){ game.enableKey(3) } },
         {time:1.0, action:function(game){ game.enableKey(4) } },
+
         {time:1.0, action:function(game){
             game.bossAppear(new THREE.Vector3(0, 1000, 0))
             game.bossMove(new THREE.Vector3(0, 600, 0)) } },

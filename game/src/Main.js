@@ -226,12 +226,29 @@ Main.prototype.getAssets = function() {
 		{ name: 'assets/intro/intro_radmars1.png', type: 'img' },
 		{ name: 'assets/intro/intro_radmars2.png', type: 'img' },
 		{ name: 'assets/intro/intro_mars.png', type: 'img' },
+
 		{ name: 'assets/hud/note0.png', type: 'img' },
 		{ name: 'assets/hud/note1.png', type: 'img' },
 		{ name: 'assets/hud/note2.png', type: 'img' },
 		{ name: 'assets/hud/note3.png', type: 'img' },
 		{ name: 'assets/hud/note4.png', type: 'img' },
+
+        { name: 'assets/hud/boss.png', type: 'img' },
+        { name: 'assets/hud/boss_hp_bar.png', type: 'img' },
+        { name: 'assets/hud/hp.png', type: 'img' },
+        { name: 'assets/hud/hp_bar.png', type: 'img' },
+        { name: 'assets/hud/hp_bar_bg.png', type: 'img' },
+
 		{ name: 'assets/models/pyramid.js', type: 'model' },
+        { name: 'assets/models/diamond.js', type: 'model' },
+        { name: 'assets/models/tessitron_logo.js', type: 'model' },
+        { name: 'assets/models/tessitron_text.js', type: 'model' },
+        { name: 'assets/models/tritorus.js', type: 'model' },
+        { name: 'assets/models/xena.js', type: 'model' },
+        { name: 'assets/models/spikePlatonic.js', type: 'model' },
+
+        { name: 'assets/models/boss_body.js', type: 'model' },
+        { name: 'assets/models/boss_spikes.js', type: 'model' },
 	];
 };
 
@@ -523,7 +540,13 @@ GameOver.prototype.onStart = function( game ) {
 	);
 	this.controller = new GameOverController( game, this.camera, this.scene );
 	game.controllers.push( this.controller );
-	game.loader.get("sound/radmarslogo").play();
+
+    if(window.game_win == true){
+        game.loader.get("sound/gameover-win").play();
+    }else{
+        game.loader.get("sound/gameover-lose").play();
+    }
+
 };
 
 GameOver.prototype.resize = function( width, height ) {
@@ -535,7 +558,9 @@ GameOver.prototype.resize = function( width, height ) {
 }
 
 GameOver.prototype.onStop = function( game) {
-	game.loader.get("sound/radmarslogo").stop();
+    game.loader.get("sound/gameover-win").stop();
+    game.loader.get("sound/gameover-lose").stop();
+
 	this.controller.onStop();
 	game.controllers = [];
 };

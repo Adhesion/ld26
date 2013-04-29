@@ -39,20 +39,29 @@ function Baddie(pos, size, note) {
     }
 
     var geom;
+    var s = 2;
 
     switch(this.shape){
         case 0:
-            geom = new THREE.TetrahedronGeometry(this.size);
+            //geom = new THREE.TetrahedronGeometry(this.size);
+            geom = window.main.loader.get("assets/models/diamond.js");
             break;
         case 1:
-            geom = new THREE.CubeGeometry(this.size, this.size, this.size, 1);
+            //geom = new THREE.CubeGeometry(this.size, this.size, this.size, 1);
+            geom = window.main.loader.get("assets/models/tritorus.js");
+             s = 1;
             break;
         case 2:
-            geom = new THREE.OctahedronGeometry(this.size, 1)
+            //geom = new THREE.OctahedronGeometry(this.size, 1)
+            geom = window.main.loader.get("assets/models/xena.js");
+            s = 2.5;
             break;
     }
-
     GameObject.call(this, geom, color, color);
+
+    this.objectScale = this.size/5 * s;
+    this.solid.scale = new THREE.Vector3(this.objectScale, this.objectScale, this.objectScale);
+    this.wire.scale = new THREE.Vector3(this.objectScale, this.objectScale, this.objectScale);
 
     this.linkMat = new THREE.LineBasicMaterial({ color: 0xffffff });
     var linkGeom = new THREE.Geometry();
@@ -79,12 +88,12 @@ Baddie.prototype.linkChild = function (baddie) {
 
 Baddie.prototype.disable = function () {
     this.active = false;
-    this.solid.scale = new THREE.Vector3(0.5, 0.5, 0.5);
+    this.solid.scale = new THREE.Vector3(this.objectScale * 0.5, this.objectScale * 0.5, this.objectScale * 0.5);
 };
 
 Baddie.prototype.enable = function () {
     this.active = true;
-    this.solid.scale = new THREE.Vector3(1.0, 1.0, 1.0);
+    this.solid.scale = new THREE.Vector3(this.objectScale * 1.0, this.objectScale * 1.0, this.objectScale * 1.0);
 };
 
 Baddie.prototype.update = function (dt) {

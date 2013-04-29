@@ -1,7 +1,7 @@
 function GameObjectController(main) {
 
 
-   // Howler.mute();
+    Howler.mute();
 
     this.missfireCounter = 0;
     this.missfireCounterMax = 2.0;
@@ -62,6 +62,8 @@ function GameObjectController(main) {
         if( i < 3 ) this.enabledKeys.push( true );
         else this.enabledKeys.push( false );  // 4th & 5th keys disabled at first
     }
+
+    window.game_win = false;
 }
 
 GameObjectController.prototype.update = function () {
@@ -69,7 +71,6 @@ GameObjectController.prototype.update = function () {
 
     this.checkInput();
     var dt = 1/60;
-
 
     this.level.update(dt);
 
@@ -103,7 +104,6 @@ GameObjectController.prototype.manageMissfire = function (dt) {
 
     if(this.missfireCounter < 0)this.missfireCounter = 0;
 };
-
 
 GameObjectController.prototype.ambientCameraMovement = function (dt) {
     this.sway += dt * 0.5;
@@ -144,7 +144,6 @@ GameObjectController.prototype.checkHits = function () {
             this.baddies[i].hit(1);
 
             //TODO: avatar take a hit.
-
             this.shake = 0.5;
             this.main.loader.get( "sound/playerhit" + this.baddies[i].type).play();
 
@@ -158,17 +157,15 @@ GameObjectController.prototype.checkHits = function () {
     }
 };
 
-
 GameObjectController.prototype.addScore = function (val) {
     this.main.state.uiController.addScore(val);
 };
-
 
 GameObjectController.prototype.spawnDieParticles = function (baddie) {
     var i;
     var particle;
 
-    this.shake += 0.1;
+    this.shake += 0.2;
 
     for (i = 0; i < 10; i++) {
         particle = new Particle(baddie.pos.clone(), baddie.color, baddie.wireColor, baddie.size, 1.0, 200);
@@ -180,8 +177,6 @@ GameObjectController.prototype.spawnDieParticles = function (baddie) {
 GameObjectController.prototype.spawnBossHitParticles = function () {
     var i;
     var particle;
-
-    this.shake = 2.0;
 
     for (i = 0; i < 50; i++) {
         particle = new Particle(this.boss.pos.clone(), this.boss.color, this.boss.wireColor, this.boss.size, 3.0, 1000);
@@ -218,7 +213,6 @@ GameObjectController.prototype.makeLinkedBaddies = function (baddies) {
         this.main.state.scene.add(baddies[i].holder);
     }
 };
-
 
 GameObjectController.prototype.makeBossLinkedBaddies = function (baddies) {
     this.makeLinkedBaddies(baddies);
@@ -330,7 +324,20 @@ GameObjectController.prototype.hitBaddie = function (baddie, chain) {
             // TODO boss hit sound?
             // probably should just call boss.hit()?
             console.log("boss has been hit");
-            this.main.loader.get( "sound/bosshit" ).play(); // temp
+            this.boss.hit(1);
+
+            if(this.boss.alive){
+                this.main.loader.get( "sound/bosshit" ).play(); // temp
+                this.shake = 2.0;
+            }else{
+                this.main.loader.get( "sound/bosshit" ).play(); // temp
+                this.main.loader.get( "sound/bossdeath" ).play(); // temp
+                this.shake = 5.0;
+                this.main.state.scene.remove(this.boss.holder);
+                this.boss.active = false;
+
+                window.game_win = true;
+            }
         }
         // regular enemy in chain
         else {
@@ -373,6 +380,7 @@ GameObjectController.prototype.defaultCamera = function (time) {
 GameObjectController.prototype.bossAppear = function (pos) {
     this.boss.appear(pos);
     this.main.state.scene.add(this.boss.holder);
+    this.boss.active = true;
 };
 
 GameObjectController.prototype.bossMove = function (pos) {

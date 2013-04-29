@@ -58,53 +58,98 @@ function UIController(main) {
         })
     );
 
+
+    this.boss = new THREE.Sprite(
+        new THREE.SpriteMaterial({
+            map: main.loader.get( "assets/hud/boss.png" ),
+            useScreenCoordinates: true,
+            alignment: THREE.SpriteAlignment.topLeft
+        })
+    );
+
+    this.boss_hp_bar = new THREE.Sprite(
+        new THREE.SpriteMaterial({
+            map: main.loader.get( "assets/hud/boss_hp_bar.png" ),
+            useScreenCoordinates: true,
+            alignment: THREE.SpriteAlignment.topLeft
+        })
+    );
+
+    this.hp = new THREE.Sprite(
+        new THREE.SpriteMaterial({
+            map: main.loader.get( "assets/hud/hp.png" ),
+            useScreenCoordinates: true,
+            alignment: THREE.SpriteAlignment.topLeft
+        })
+    );
+
+    this.hp_bar = new THREE.Sprite(
+        new THREE.SpriteMaterial({
+            map: main.loader.get( "assets/hud/hp_bar.png" ),
+            useScreenCoordinates: true,
+            alignment: THREE.SpriteAlignment.topLeft
+        })
+    );
+
+    this.hp_bar_bg = new THREE.Sprite(
+        new THREE.SpriteMaterial({
+            map: main.loader.get( "assets/hud/hp_bar_bg.png" ),
+            useScreenCoordinates: true,
+            alignment: THREE.SpriteAlignment.topLeft
+        })
+    );
+
+    this.boss_hp_bar_bg = new THREE.Sprite(
+        new THREE.SpriteMaterial({
+            map: main.loader.get( "assets/hud/hp_bar_bg.png" ),
+            useScreenCoordinates: true,
+            alignment: THREE.SpriteAlignment.topLeft
+        })
+    );
+
     console.log( "x pos: " + (window.innerWidth / 2 - 149) );
     console.log( "y pos: " + window.innerHeight * 0.85 );
 
-    this.note0.position.set( window.innerWidth / 2 - 35 - 80 * 2, window.innerHeight - 80, 0 );
     this.note0.scale.set( 70, 70, 1 );
-
-    this.note1.position.set( window.innerWidth / 2 - 35 - 80, window.innerHeight - 80, 0 );
     this.note1.scale.set( 70, 70, 1 );
-
-    this.note2.position.set( window.innerWidth / 2 - 35, window.innerHeight - 80, 0 );
     this.note2.scale.set( 70, 70, 1 );
-
-    this.note3.position.set( window.innerWidth / 2 - 35 + 80, window.innerHeight - 80, 0 );
     this.note3.scale.set( 70, 70, 1 );
-
-    this.note4.position.set( window.innerWidth / 2 - 35 + 80 * 2, window.innerHeight - 80, 0 );
     this.note4.scale.set( 70, 70, 1 );
 
-    this.barBg = new THREE.Mesh(
-        new THREE.PlaneGeometry( 100, 30 ),
-        new THREE.MeshBasicMaterial({
-            color: 0xff0000,
-            transparent: false
-        })
-    );
-    this.barBg.translateOnAxis( new THREE.Vector3( 1, 0, 0 ), 200 );
-    this.barBg.translateOnAxis( new THREE.Vector3( 0, 1, 0 ), 30 );
-    this.barBg.rotateOnAxis( new THREE.Vector3( 1, 0, 0 ), 90 );
+    var s = 0.5;
 
-    this.barFg = new THREE.Mesh(
-        new THREE.PlaneGeometry( 100, 30 ),
-        new THREE.MeshBasicMaterial({
-            color: 0x00ff00,
-            transparent: false
-        })
-    );
-    this.barFg.translateOnAxis( new THREE.Vector3( 1, 0, 0 ), 200 );
-    this.barFg.translateOnAxis( new THREE.Vector3( 0, 1, 0 ), 30 );
-    this.barFg.translateOnAxis( new THREE.Vector3( 0, 0, 1 ), 30 );
-    this.barFg.rotateOnAxis( new THREE.Vector3( 1, 0, 0 ), 90 );
+    this.hp.position.set( 10 * s, 10 * s, 0 );
+    this.hp.scale.set( 134 * s, 42 * s, 1 );
+    this.hp_bar.position.set( 160 * s, 10 * s, 0 );
+    this.hp_bar.scale.set( 400 * s, 42 * s, 1 );
+    this.hp_bar_bg.position.set( 160 * s, 10 * s, 0 );
+    this.hp_bar_bg.scale.set( 400 * s, 42 * s, 1 );
+    this.boss.position.set( 10 * s, 80 * s, 0 );
+    this.boss.scale.set( 258 * s, 44 * s, 1 );
+    this.boss_hp_bar.position.set( 290 * s, 80 * s, 0 );
+    this.boss_hp_bar.scale.set( 400 * s, 42 * s, 1 );
+    this.boss_hp_bar_bg.position.set( 290 * s, 80 * s, 0 );
+    this.boss_hp_bar_bg.scale.set( 400 * s, 42 * s, 1 );
 
-    this.scene.add( this.barBg );
-    this.scene.add( this.barFg );
+
+    this.hpLen = this.hp_bar.scale.x;
+
+    this.scene.add( this.hp );
+    this.scene.add( this.hp_bar );
+    this.scene.add( this.hp_bar_bg );
+    this.scene.add( this.boss );
+    this.scene.add( this.boss_hp_bar );
+    this.scene.add( this.boss_hp_bar_bg );
 
     this.scene.add( this.note0 );
     this.scene.add( this.note1 );
     this.scene.add( this.note2 );
+
+    this.boss.material.opacity = 0;
+    this.boss_hp_bar.material.opacity = 0;
+    this.boss_hp_bar_bg.material.opacity = 0;
+
+    this.resize(window.innerWidth, window.innerHeight);
 }
 
 UIController.prototype.resize = function( width, height ) {
@@ -127,7 +172,20 @@ UIController.prototype.addScore = function (val) {
 
 UIController.prototype.update = function () {
     var avatar = this.main.state.goController.avatar;
-    this.barFg.scale.x = avatar.hp / avatar.startHP;
+    var boss = this.main.state.goController.boss;
+
+    if( boss.active ){
+        this.boss.material.opacity = 1;
+        this.boss_hp_bar.material.opacity = 1;
+        this.boss_hp_bar_bg.material.opacity = 1;
+    }else{
+        this.boss.material.opacity = 0;
+        this.boss_hp_bar.material.opacity = 0;
+        this.boss_hp_bar_bg.material.opacity = 0;
+    }
+
+    this.hp_bar.scale.x = avatar.hp / avatar.startHP * this.hpLen;
+    this.boss_hp_bar.scale.x = boss.hp / boss.startHP * this.hpLen;
 
     var input = this.main.state.goController.input;
 
