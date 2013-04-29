@@ -652,7 +652,7 @@ function SplashController( game, camera, scene, isGameover ) {
     });
 
     this.bgSprite = new THREE.Sprite( bgMaterial );
-    this.bgSprite.scale.set( 20, 20, 1 );
+    this.bgSprite.scale.set( 545*0.5, 42*0.5, 1 );
 
     this.counter = 0;
 
@@ -785,7 +785,7 @@ SplashController.prototype.update = function( dt ) {
     }
 
 
-    this.blink += dt/1000 * 2;
+    this.blink += dt/1000;
     if(this.blink > 1 ) this.blink = 0;
 
 }

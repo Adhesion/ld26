@@ -176,11 +176,14 @@ GameObjectController.prototype.spawnDieParticles = function (baddie) {
 };
 
 GameObjectController.prototype.spawnScoreParticle = function (baddie, score, offset) {
+   //skip this
+    /*
     var p = baddie.pos.clone();
     p.z += offset;
     var particle = new ScorePopup(p, baddie.color, score);
     this.particles.push(particle);
     this.main.state.scene.add(particle.holder);
+    */
 };
 
 GameObjectController.prototype.spawnBossHitParticles = function () {

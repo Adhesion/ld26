@@ -12,7 +12,7 @@ function Avatar() {
     this.range = 100;
 
     this.rangeMat = new THREE.MeshBasicMaterial({ color:0xffffff, transparent:true });
-    var rangeGeom = new THREE.TorusGeometry(this.range, 1, 1, 10);
+    var rangeGeom = new THREE.TorusGeometry(this.range, 3, 3, 10);
 
     this.rangeMesh = new THREE.Line(rangeGeom, this.rangeMat, THREE.LineStrip);
     this.holder.add(this.rangeMesh);
