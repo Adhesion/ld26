@@ -1,4 +1,8 @@
 function GameObjectController(main) {
+
+
+    Howler.mute();
+
     this.main = main;
     this.input = new Input();
 
@@ -48,7 +52,6 @@ function GameObjectController(main) {
     this.main.state.scene.add( this.light3 );
     this.main.state.scene.add( this.light4 );
 
-    //Howler.mute();
 
     this.enabledKeys = []
     for( var i = 0; i < 5; i++ ) {

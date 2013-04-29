@@ -95,7 +95,7 @@ Baddie.prototype.update = function (dt) {
         this.deathTimer--;
     }
     else if(this.slowed){
-        this.timeMult = 0.5;
+        this.timeMult = 0.25;
     }else{
         this.timeMult = 1.0;
     }

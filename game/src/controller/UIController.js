@@ -22,9 +22,23 @@ function UIController(main) {
     );
     this.camera.position.z = 100;
 
-    this.notes = new THREE.Sprite(
+    this.note0 = new THREE.Sprite(
         new THREE.SpriteMaterial({
-            map: main.loader.get( "assets/hud/notes.png" ),
+            map: main.loader.get( "assets/hud/note0.png" ),
+            useScreenCoordinates: true,
+            alignment: THREE.SpriteAlignment.topLeft
+        })
+    );
+    this.note1 = new THREE.Sprite(
+        new THREE.SpriteMaterial({
+            map: main.loader.get( "assets/hud/note1.png" ),
+            useScreenCoordinates: true,
+            alignment: THREE.SpriteAlignment.topLeft
+        })
+    );
+    this.note2 = new THREE.Sprite(
+        new THREE.SpriteMaterial({
+            map: main.loader.get( "assets/hud/note2.png" ),
             useScreenCoordinates: true,
             alignment: THREE.SpriteAlignment.topLeft
         })
@@ -46,14 +60,21 @@ function UIController(main) {
 
     console.log( "x pos: " + (window.innerWidth / 2 - 149) );
     console.log( "y pos: " + window.innerHeight * 0.85 );
-    this.notes.position.set( window.innerWidth / 2 - 149, window.innerHeight * 0.85, 0 );
-    this.notes.scale.set( 298, 13, 1 );
 
-    this.note3.position.set( window.innerWidth / 2 + 108, window.innerHeight * 0.85, 0 );
-    this.note3.scale.set( 28, 13, 1 );
+    this.note0.position.set( window.innerWidth / 2 - 35 - 80 * 2, window.innerHeight - 80, 0 );
+    this.note0.scale.set( 70, 70, 1 );
 
-    this.note4.position.set( window.innerWidth / 2 + 136, window.innerHeight * 0.85, 0 );
-    this.note4.scale.set( 13, 13, 1 );
+    this.note1.position.set( window.innerWidth / 2 - 35 - 80, window.innerHeight - 80, 0 );
+    this.note1.scale.set( 70, 70, 1 );
+
+    this.note2.position.set( window.innerWidth / 2 - 35, window.innerHeight - 80, 0 );
+    this.note2.scale.set( 70, 70, 1 );
+
+    this.note3.position.set( window.innerWidth / 2 - 35 + 80, window.innerHeight - 80, 0 );
+    this.note3.scale.set( 70, 70, 1 );
+
+    this.note4.position.set( window.innerWidth / 2 - 35 + 80 * 2, window.innerHeight - 80, 0 );
+    this.note4.scale.set( 70, 70, 1 );
 
     this.barBg = new THREE.Mesh(
         new THREE.PlaneGeometry( 100, 30 ),
@@ -70,6 +91,7 @@ function UIController(main) {
         new THREE.PlaneGeometry( 100, 30 ),
         new THREE.MeshBasicMaterial({
             color: 0x00ff00,
+            transparent: false
         })
     );
     this.barFg.translateOnAxis( new THREE.Vector3( 1, 0, 0 ), 200 );
@@ -79,14 +101,24 @@ function UIController(main) {
 
     this.scene.add( this.barBg );
     this.scene.add( this.barFg );
-    this.scene.add( this.notes );
+
+    this.scene.add( this.note0 );
+    this.scene.add( this.note1 );
+    this.scene.add( this.note2 );
 }
 
 UIController.prototype.resize = function( width, height ) {
     this.camera.right = width;
     this.camera.bottom = height;
     this.camera.updateProjectionMatrix();
-    this.notes.position.set( width - 320, 20 );
+
+    //this.notes.position.set( width - 320, 20 );
+
+    this.note0.position.set( width / 2 - 35 - 80 * 2, height - 80, 0 );
+    this.note1.position.set( width / 2 - 35 - 80, height - 80, 0 );
+    this.note2.position.set( width / 2 - 35, height - 80, 0 );
+    this.note3.position.set( width / 2 - 35 + 80, height - 80, 0 );
+    this.note4.position.set( width / 2 - 35 + 80 * 2, height - 80, 0 );
 }
 
 UIController.prototype.addScore = function (val) {
@@ -96,6 +128,19 @@ UIController.prototype.addScore = function (val) {
 UIController.prototype.update = function () {
     var avatar = this.main.state.goController.avatar;
     this.barFg.scale.x = avatar.hp / avatar.startHP;
+
+    var input = this.main.state.goController.input;
+
+    if(input.x) this.note0.material.opacity = 1;
+    else this.note0.material.opacity = 0.5;
+    if(input.c) this.note1.material.opacity = 1;
+    else this.note1.material.opacity = 0.5;
+    if(input.v) this.note2.material.opacity = 1;
+    else this.note2.material.opacity = 0.5;
+    if(input.b) this.note3.material.opacity = 1;
+    else this.note3.material.opacity = 0.5;
+    if(input.n) this.note4.material.opacity = 1;
+    else this.note4.material.opacity = 0.5;
 
     if (this.displayScore < this.score) {
         this.displayScore += (this.score - this.displayScore) * 0.05;
