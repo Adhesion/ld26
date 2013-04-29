@@ -173,6 +173,10 @@ GameObjectController.prototype.spawnDieParticles = function (baddie) {
         this.particles.push(particle);
         this.main.state.scene.add(particle.holder);
     }
+
+    var shockwave = new ShockwaveParticle(baddie.pos.clone(), baddie.color, baddie.size);
+    this.particles.push(shockwave);
+    this.main.state.scene.add(shockwave.holder);
 };
 
 GameObjectController.prototype.spawnScoreParticle = function (baddie, score, offset) {
@@ -252,26 +256,32 @@ GameObjectController.prototype.checkInput = function () {
     if (this.input.b == false) this.b = false;
     if (this.input.n == false) this.n = false;
 
+
     // only attack if key has been pressed this update.
     if(this.input.x == true && this.x == false ){
         this.x = true;
         this.attack(0);
+        this.avatar.showRing(0);
     }
     if(this.input.c == true && this.c == false ){
         this.c = true;
         this.attack(1);
+        this.avatar.showRing(1);
     }
     if(this.input.v == true && this.v == false ){
         this.v = true;
         this.attack(2);
+        this.avatar.showRing(2);
     }
     if(this.input.b == true && this.b == false ){
         this.b = true;
         this.attack(3);
+        this.avatar.showRing(3);
     }
     if(this.input.n == true && this.n == false ){
         this.n = true;
         this.attack(4);
+        this.avatar.showRing(4);
     }
 };
 

@@ -10,11 +10,28 @@ function Avatar() {
     this.missfireActive = false;
 
     this.range = 100;
+    this.rangeMat = new THREE.MeshPhongMaterial({ color:0xffffff, transparent:true, shading: THREE.FlatShading  });
 
-    this.rangeMat = new THREE.MeshBasicMaterial({ color:0xffffff, transparent:true });
-    var rangeGeom = new THREE.TorusGeometry(this.range, 3, 3, 10);
+    this.range2Mats = [
+        new THREE.MeshPhongMaterial({ color:0xf53d54, transparent:true, shading: THREE.FlatShading  }) ,
+        new THREE.MeshPhongMaterial({ color:0x04bf9d, transparent:true, shading: THREE.FlatShading  }),
+        new THREE.MeshPhongMaterial({ color:0x2e6fac, transparent:true, shading: THREE.FlatShading  }),
+        new THREE.MeshPhongMaterial({ color:0xf2e85c, transparent:true, shading: THREE.FlatShading  }),
+        new THREE.MeshPhongMaterial({ color:0x9572c0, transparent:true, shading: THREE.FlatShading  })
+    ];
 
-    this.rangeMesh = new THREE.Line(rangeGeom, this.rangeMat, THREE.LineStrip);
+    var rangeGeom = new THREE.TorusGeometry(this.range, 1, 4, 10);
+    var range2Geom = new THREE.TorusGeometry(this.range-25, 30, 4, 10);
+
+    this.rangeMesh = new THREE.Mesh(rangeGeom, this.rangeMat);
+
+    this.range2Mesh = new THREE.Mesh(range2Geom, this.range2Mats[0]);
+    this.range2Mesh.scale.z = 0.01;
+    this.range2Mesh.z = 4;
+
+    this.range2Mesh.material.opacity = 0;
+
+    this.holder.add(this.range2Mesh);
     this.holder.add(this.rangeMesh);
 }
 
@@ -24,11 +41,31 @@ Avatar.prototype.constructor = Avatar;
 Avatar.prototype.update = function (dt) {
     GameObject.prototype.update.call(this, dt);
 
-    if(this.missfireActive){
-        this.rangeMat.opacity = 0.25;
+    if(this.missfireActive ){
+        this.rangeMesh.material.opacity = 0.1;
+        this.range2Mesh.material.opacity = 0.1;
     }else{
-        this.rangeMat.opacity = 1.0;
+        this.rangeMesh.material.opacity = 1;
     }
+
+    this.rangeMesh.rotation.z += dt;
+    this.range2Mesh.rotation.z += dt;
+
+    this.range2Mesh.scale.x += dt * 5;
+    this.range2Mesh.scale.y += dt * 5;
+
+    if(this.range2Mesh.scale.x > 1)this.range2Mesh.scale.x =1;
+    if(this.range2Mesh.scale.y > 1)this.range2Mesh.scale.y =1;
+
+    this.range2Mesh.material.opacity -=dt * 5;
+    if(this.range2Mesh.material.opacity < 0) this.range2Mesh.material.opacity = 0;
+};
+
+Avatar.prototype.showRing = function (i) {
+    this.range2Mesh.material = this.range2Mats[i];
+    this.range2Mesh.material.opacity = 1;
+    this.range2Mesh.scale.x =0.25;
+    this.range2Mesh.scale.y =0.25;
 };
 
 Avatar.prototype.missfire = function (active) {
