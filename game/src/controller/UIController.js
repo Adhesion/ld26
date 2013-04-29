@@ -3,6 +3,22 @@ function UIController(main) {
 
     this.displayScore = 0;
     this.score = 0;
+    window.game_score = 0;
+
+    this.canvas = document.createElement("canvas");
+
+    this.updateCanvas();
+
+    this.scoreTex = new THREE.Texture(this.canvas);
+    this.scoreTex.needsUpdate = true;
+
+    this.scoreSprite = new THREE.Sprite(
+        new THREE.SpriteMaterial({
+            map: this.scoreTex,
+            useScreenCoordinates: true,
+            alignment: THREE.SpriteAlignment.topRight
+        })
+    );
 
     /*
     this.scoreTxt = document.createTextNode("0");
@@ -116,6 +132,8 @@ function UIController(main) {
     this.note3.scale.set( 70, 70, 1 );
     this.note4.scale.set( 70, 70, 1 );
 
+    this.scoreSprite.scale.set( 256, 64, 1 );
+
     var s = 0.5;
 
     this.hp.position.set( 10 * s, 10 * s, 0 );
@@ -145,12 +163,32 @@ function UIController(main) {
     this.scene.add( this.note1 );
     this.scene.add( this.note2 );
 
+    this.scene.add( this.scoreSprite );
+
     this.boss.material.opacity = 0;
     this.boss_hp_bar.material.opacity = 0;
     this.boss_hp_bar_bg.material.opacity = 0;
 
     this.resize(window.innerWidth, window.innerHeight);
 }
+
+UIController.prototype.updateCanvas = function(){
+    this.canvas.width = 256;
+    this.canvas.height = 64;
+    var context = this.canvas.getContext('2d');
+    context.font = '30pt Arial';
+
+    //context.fillStyle = 'red';
+    //context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    //context.fillStyle = 'white';
+    //context.fillRect(10, 10, this.canvas.width - 20, this.canvas.height - 20);
+
+    context.fillStyle = 'white';
+    context.textAlign = "right";
+    context.textBaseline = "top";
+    context.fillText("" + this.displayScore, this.canvas.width-5, 0);
+}
+
 
 UIController.prototype.resize = function( width, height ) {
     this.camera.right = width;
@@ -164,13 +202,18 @@ UIController.prototype.resize = function( width, height ) {
     this.note2.position.set( width / 2 - 35, height - 80, 0 );
     this.note3.position.set( width / 2 - 35 + 80, height - 80, 0 );
     this.note4.position.set( width / 2 - 35 + 80 * 2, height - 80, 0 );
+
+    this.scoreSprite.position.set( width, 0, 0 );
 }
 
 UIController.prototype.addScore = function (val) {
     this.score += val;
+    window.game_score = this.score;
 };
 
 UIController.prototype.update = function () {
+
+
     var avatar = this.main.state.goController.avatar;
     var boss = this.main.state.goController.boss;
 
@@ -200,11 +243,15 @@ UIController.prototype.update = function () {
     if(input.n) this.note4.material.opacity = 1;
     else this.note4.material.opacity = 0.5;
 
+
     if (this.displayScore < this.score) {
         this.displayScore += (this.score - this.displayScore) * 0.05;
         if (this.score - this.displayScore <= 1) {
             this.displayScore = this.score;
         }
+
+        this.updateCanvas();
+        this.scoreTex.needsUpdate = true;
     }
 
     /*

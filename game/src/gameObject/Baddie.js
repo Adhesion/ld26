@@ -39,7 +39,7 @@ function Baddie(pos, size, note) {
     }
 
     var geom;
-    var s = 2;
+    var s = 1;
 
     switch(this.shape){
         case 0:
@@ -49,12 +49,12 @@ function Baddie(pos, size, note) {
         case 1:
             //geom = new THREE.CubeGeometry(this.size, this.size, this.size, 1);
             geom = window.main.loader.get("assets/models/tritorus.js");
-             s = 1;
+             s = 0.75;
             break;
         case 2:
             //geom = new THREE.OctahedronGeometry(this.size, 1)
             geom = window.main.loader.get("assets/models/xena.js");
-            s = 2.5;
+            s = 1.5;
             break;
     }
     GameObject.call(this, geom, color, color);
@@ -75,6 +75,10 @@ function Baddie(pos, size, note) {
     this.speed = 150;
 
     this.update(0);
+
+    this.rotation.x = Math.random() * Math.PI * 2;
+    this.rotation.y = Math.random() * Math.PI * 2;
+    this.rotation.z = Math.random() * Math.PI * 2;
 }
 
 Baddie.prototype = new GameObject();
@@ -104,7 +108,7 @@ Baddie.prototype.update = function (dt) {
         this.deathTimer--;
     }
     else if(this.slowed){
-        this.timeMult = 0.25;
+        this.timeMult = 0.4;
     }else{
         this.timeMult = 1.0;
     }
