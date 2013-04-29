@@ -56,46 +56,46 @@ function Loader() {
 
 Loader.prototype.load = function( assets ) {
 	var self = this;
-    var modelLoader = new THREE.JSONLoader();
-	for( var i = 0; i < assets.length; i ++ ) {
-		var asset = assets[i];
-		if( asset.type == 'img' ) {
+	loaders = {
+		img: function( asset, name ) {
 			var image = THREE.ImageUtils.loadTexture(
-				asset.name,
+				name,
 				undefined,
 				function( image ) {
-					self.assets[image.name] = image;
+					self.assets[name] = image;
 				},
 				function( error ) {
 					console.error( error );
 				}
 			);
-			image.name = asset.name;
-		}
-		else if( asset.type == 'audio' ) {
+		},
+		audio: function( asset, name ) {
 			var settings = {};
 			var audio;
-			settings.name = asset.name;
 			if( asset.volume ) settings.volume = asset.volume;
 			if( asset.buffer ) settings.buffer = asset.buffer;
 			settings.urls = asset.urls;
 			settings.onload = function( ) {
-				self.assets[this.hack_asset_name] = this;
-				if( this.hack_callback )
-					this.hack_callback( this );
+				self.assets[name] = this;
+				if( asset.callback)
+					asset.callback( this );
 			}
 			audio = new Howl( settings );
-			audio.hack_asset_name = asset.name;
-			audio.hack_callback = asset.callback;
-		}
-		else if( asset.type == 'model' ) {
-			var hackName = asset.name;
-			modelLoader.load( hackName,
+		},
+		model: function( asset, name ) {
+			var modelLoader = new THREE.JSONLoader();
+			modelLoader.load( name,
 				function(geo) {
-					self.assets[hackName] = geo;
+					self.assets[name] = geo;
 				}
 			);
 		}
+	};
+
+	for( var i = 0; i < assets.length; i ++ ) {
+		var asset = assets[i];
+		loader = loaders[asset.type];
+		loader( asset, asset.name );
 	}
 };
 
@@ -169,14 +169,14 @@ Main.prototype.getAssets = function() {
 			volume: vol || 0.27,
 			urls: [
 				"sound/" + (prefix || "") + "hit" + base + ".mp3",
-                "sound/" + (prefix || "") + "hit" + base + ".ogg"
+				"sound/" + (prefix || "") + "hit" + base + ".ogg"
 			],
 			type: 'audio',
 			callback: function( audio ) {
-                if( !prefix ) {
-                    window.hitSounds = window.hitSounds || [];
-                    window.hitSounds[base] = audio;
-                }
+				if( !prefix ) {
+					window.hitSounds = window.hitSounds || [];
+					window.hitSounds[base] = audio;
+				}
 			}
 		};
 	};
@@ -188,11 +188,11 @@ Main.prototype.getAssets = function() {
 		{ name: "sound/bossdeath", urls: ['sound/bossdeath.mp3', 'sound/bossdeath.ogg'], type: 'audio', volume: 0.9, buffer: true },
 		{ name: "sound/miss", urls: ['sound/miss.mp3', 'sound/miss.ogg'], type: 'audio', volume: 0.4, buffer: true },
 		{ name: "sound/misfire", urls: ['sound/misfire.mp3', 'sound/misfire.ogg'], type: 'audio', volume: 0.5, buffer: true },
-        { name: "sound/gameover-lose", urls: ['sound/gameover-lose.mp3', 'sound/gameover-lose.ogg'], type: 'audio', volume: 0.9, buffer: true },
-        { name: "sound/gameover-win", urls: ['sound/gameover-win.mp3', 'sound/gameover-win.ogg'], type: 'audio', volume: 0.9, buffer: true },
-        { name: "sound/intro", urls: ['sound/intro.mp3', 'sound/intro.ogg'], type: 'audio', volume: 0.9, buffer: true },
+		{ name: "sound/gameover-lose", urls: ['sound/gameover-lose.mp3', 'sound/gameover-lose.ogg'], type: 'audio', volume: 0.9, buffer: true },
+		{ name: "sound/gameover-win", urls: ['sound/gameover-win.mp3', 'sound/gameover-win.ogg'], type: 'audio', volume: 0.9, buffer: true },
+		{ name: "sound/intro", urls: ['sound/intro.mp3', 'sound/intro.ogg'], type: 'audio', volume: 0.9, buffer: true },
 
-        hitAsset( 0 ),
+		hitAsset( 0 ),
 		hitAsset( 1 ),
 		hitAsset( 2 ),
 		hitAsset( 3 ),
@@ -207,18 +207,18 @@ Main.prototype.getAssets = function() {
 		hitAsset( 12 ),
 		hitAsset( 13 ),
 		hitAsset( 14 ),
-        hitAsset( 0, "player", 0.35 ),
-        hitAsset( 1, "player", 0.35 ),
-        hitAsset( 2, "player", 0.35 ),
-        hitAsset( 3, "player", 0.35 ),
-        hitAsset( 4, "player", 0.35 ),
-        hitAsset( 0, "chain", 0.3 ),
-        hitAsset( 1, "chain", 0.3 ),
-        hitAsset( 2, "chain", 0.3 ),
-        hitAsset( 3, "chain", 0.3 ),
-        hitAsset( 4, "chain", 0.3 ),
-        { name: 'assets/gameover/gameover.png', type: 'img', },
-        { name: 'assets/intro/intro_bg.png', type: 'img', },
+		hitAsset( 0, "player", 0.35 ),
+		hitAsset( 1, "player", 0.35 ),
+		hitAsset( 2, "player", 0.35 ),
+		hitAsset( 3, "player", 0.35 ),
+		hitAsset( 4, "player", 0.35 ),
+		hitAsset( 0, "chain", 0.3 ),
+		hitAsset( 1, "chain", 0.3 ),
+		hitAsset( 2, "chain", 0.3 ),
+		hitAsset( 3, "chain", 0.3 ),
+		hitAsset( 4, "chain", 0.3 ),
+		{ name: 'assets/gameover/gameover.png', type: 'img', },
+		{ name: 'assets/intro/intro_bg.png', type: 'img', },
 		{ name: 'assets/intro/intro_glasses1.png', type: 'img' },
 		{ name: 'assets/intro/intro_glasses2.png', type: 'img' },
 		{ name: 'assets/intro/intro_glasses3.png', type: 'img' },
@@ -227,11 +227,11 @@ Main.prototype.getAssets = function() {
 		{ name: 'assets/intro/intro_radmars2.png', type: 'img' },
 		{ name: 'assets/intro/intro_mars.png', type: 'img' },
 		{ name: 'assets/hud/note0.png', type: 'img' },
-        { name: 'assets/hud/note1.png', type: 'img' },
-        { name: 'assets/hud/note2.png', type: 'img' },
-        { name: 'assets/hud/note3.png', type: 'img' },
-        { name: 'assets/hud/note4.png', type: 'img' },
-		{ name: 'assets/models/pyramid.js', type: 'model' }
+		{ name: 'assets/hud/note1.png', type: 'img' },
+		{ name: 'assets/hud/note2.png', type: 'img' },
+		{ name: 'assets/hud/note3.png', type: 'img' },
+		{ name: 'assets/hud/note4.png', type: 'img' },
+		{ name: 'assets/models/pyramid.js', type: 'model' },
 	];
 };
 
