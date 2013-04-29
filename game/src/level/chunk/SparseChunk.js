@@ -19,16 +19,16 @@ SparseChunk.prototype.build = function() {
 		{time:3.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(0,800,0), 5, 0) ) } },
 
 		{time:5.0, action:function(game){ game.makeLinkedBaddies( [
-            new Baddie(new THREE.Vector3(-10,800,0), 5, 5),
-            new Baddie(new THREE.Vector3(10,850,0), 5, 2),
-            new Baddie(new THREE.Vector3(-10,900,0), 5, 5),
-            new Baddie(new THREE.Vector3(10,950,0), 5, 1) ])}},
+            new Baddie(new THREE.Vector3(-200,800,0), 5, 5),
+            new Baddie(new THREE.Vector3(-220,850,0), 5, 2),
+            new Baddie(new THREE.Vector3(-200,900,0), 5, 5),
+            new Baddie(new THREE.Vector3(-220,950,0), 5, 1) ])}},
 		
 		{time:8.0, action:function(game){ game.makeLinkedBaddies( [
-            new Baddie(new THREE.Vector3(10,800,0), 5, 2),
-            new Baddie(new THREE.Vector3(-10,850,0), 5, 6),
-            new Baddie(new THREE.Vector3(10,900,0), 5, 5),
-            new Baddie(new THREE.Vector3(-10,950,0), 5, 1) ])}},
+            new Baddie(new THREE.Vector3(200,800,0), 5, 2),
+            new Baddie(new THREE.Vector3(220,850,0), 5, 6),
+            new Baddie(new THREE.Vector3(200,900,0), 5, 5),
+            new Baddie(new THREE.Vector3(220,950,0), 5, 1) ])}},
 		
 		{time:11.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(0,800,0), 5, 11) ) } },
 		{time:12.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(0,800,0), 5, 12) ) } },
