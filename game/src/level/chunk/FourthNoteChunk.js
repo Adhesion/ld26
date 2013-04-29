@@ -63,15 +63,15 @@ FourthNoteChunk.prototype.build = function() {
 		{time:35.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(0,800,0), 5, 5) ) } },
         
         {time:37.0, action:function(game){ game.makeLinkedBaddies( [
-            new Baddie(new THREE.Vector3(0,800,0), 10, 0),
-            new Baddie(new THREE.Vector3(10,850,0), 10, 3),
-            new Baddie(new THREE.Vector3(0,900,0), 10, 2) ])}},
+            new Baddie(new THREE.Vector3(0,800,0), 5, 0),
+            new Baddie(new THREE.Vector3(10,850,0), 5, 3),
+            new Baddie(new THREE.Vector3(0,900,0), 5, 2) ])}},
             
         {time:38.0, action:function(game){ game.makeLinkedBaddies( [
-            new Baddie(new THREE.Vector3(-10,800,0), 10, 0),
-            new Baddie(new THREE.Vector3(0,850,0), 10, 3),
-            new Baddie(new THREE.Vector3(10,900,0), 10, 2),
-            new Baddie(new THREE.Vector3(0,950,0), 10, 5) ])}},
+            new Baddie(new THREE.Vector3(-10,800,0), 5, 0),
+            new Baddie(new THREE.Vector3(0,850,0), 5, 3),
+            new Baddie(new THREE.Vector3(10,900,0), 5, 2),
+            new Baddie(new THREE.Vector3(0,950,0), 5, 5) ])}},
         
         // pass game object controller, game.
         // basic baddies: pos, size, note(0-14)	

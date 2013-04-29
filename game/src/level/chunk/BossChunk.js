@@ -26,7 +26,7 @@ BossChunk.prototype.build = function() {
 		{time:3.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(0,800,0), 5, 9) ) } },
 		
 		{time:5.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(0,800,0), 5, 4) ) } },
-		{time:6.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(0,800,0), 5, 9) ) } },
+		{time:6.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(0,800,0), 5, 1) ) } },
 		{time:7.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(0,800,0), 5, 14) ) } },
 
 		{time:9.0, action:function(game){ game.makeBossLinkedBaddies( [
@@ -54,7 +54,5 @@ BossChunk.prototype.build = function() {
     ];
 };
 
-//7 10 5
-//11 12 10
-//2 6 5
+
 
