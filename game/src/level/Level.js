@@ -8,9 +8,11 @@ function Level( game ){
 
     this.game = game;
     this.chunk = 0;
+
+    //debug a specific chunk (0-6)
+    this.chunk = 0;
     this.build();
     this.startChunk(0);
-
 }
 
 Level.prototype.update = function(dt) {

@@ -352,3 +352,9 @@ GameObjectController.prototype.enableKey = function (key) {
     // fuck with UI controller here (to add to HUD)
     this.main.state.uiController.showKeyUI( key );
 };
+
+GameObjectController.prototype.gameOver = function () {
+    this.main.operations.push(function(game) {
+        game.setState( new GameOver() );
+    });
+};

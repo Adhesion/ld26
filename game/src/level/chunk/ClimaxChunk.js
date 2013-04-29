@@ -82,7 +82,7 @@ ClimaxChunk.prototype.build = function() {
         {time:38.0, action:function(game){ game.defaultCamera(1.5)} },
 
         // this is an easy way to add 'padding' to the end of a chunk
-        {time:40.0, action:function(game){ }}
+        {time:40.0, action:function(game){ game.gameOver() }}
     ];
 };
 
