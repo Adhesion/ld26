@@ -286,6 +286,7 @@ Main.prototype.update = function () {
 	}
 
 	var delta = Date.now() - this.lastFrame;
+    this.lastFrame = Date.now();
 
 	//update everything then render.
 	for( var controller in this.controllers ) {
@@ -293,8 +294,6 @@ Main.prototype.update = function () {
 	}
 
 	this.state.render( this );
-
-	this.lastFrame = Date.now();
 
 	// and then request another frame draw
 	requestAnimFrame( this.callback );
@@ -618,6 +617,7 @@ Splash.prototype.onStart = function( game ) {
     this.controller = new SplashController( game, this.camera, this.scene, false);
     game.controllers.push( this.controller );
 
+    game.loader.get("sound/intro").loop(true);
     game.loader.get("sound/intro").play();
 
 };
