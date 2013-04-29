@@ -644,7 +644,7 @@ function SplashController( game, camera, scene, isGameover ) {
     this.cy = camera.bottom / 2;
 
     var bgMaterial = new THREE.SpriteMaterial({
-        map: this.game.loader.get( "assets/gameover/gameover.png" ),
+        map: this.game.loader.get( "assets/gameover/gameover.png" )
     });
 
     this.bgSprite = new THREE.Sprite( bgMaterial );

@@ -175,6 +175,15 @@ GameObjectController.prototype.spawnDieParticles = function (baddie) {
     }
 };
 
+GameObjectController.prototype.spawnScoreParticle = function (baddie, score, offset) {
+    var p = baddie.pos.clone();
+    p.x += offset;
+    p.y += offset;
+    var particle = new ScorePopup(p, baddie.color, score);
+    this.particles.push(particle);
+    this.main.state.scene.add(particle.holder);
+};
+
 GameObjectController.prototype.spawnBossHitParticles = function () {
     var i;
     var particle;
@@ -351,7 +360,9 @@ GameObjectController.prototype.hitBaddie = function (baddie, chain) {
     } else if (chain) {
 
          //TODO: add score popup particle
-        this.main.state.uiController.addScore(100 * this.chain.length * this.combo);
+        var s = 100 * this.chain.length * this.combo;
+        this.spawnScoreParticle(baddie, s, 100);
+        this.main.state.uiController.addScore(s);
 
         this.nextChain = null;
         this.chain.push(baddie);
@@ -365,6 +376,8 @@ GameObjectController.prototype.hitBaddie = function (baddie, chain) {
     }
 
     //TODO: add score popup particle
+    var s = 50+ 55* this.combo;
+    this.spawnScoreParticle(baddie, s, 0);
     this.main.state.uiController.addScore(50+ 55* this.combo);
     this.combo++;
     //TODO: add some score

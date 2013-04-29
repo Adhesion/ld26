@@ -10,7 +10,7 @@ function Level( game ){
     this.chunk = 0;
 
     //debug a specific chunk (0-6)
-    this.chunk = 4;
+    this.chunk = 0;
     this.build();
     this.startChunk(0);
 }

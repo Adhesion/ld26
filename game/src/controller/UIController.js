@@ -177,12 +177,6 @@ UIController.prototype.updateCanvas = function(){
     this.canvas.height = 64;
     var context = this.canvas.getContext('2d');
     context.font = '30pt Arial';
-
-    //context.fillStyle = 'red';
-    //context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-    //context.fillStyle = 'white';
-    //context.fillRect(10, 10, this.canvas.width - 20, this.canvas.height - 20);
-
     context.fillStyle = 'white';
     context.textAlign = "right";
     context.textBaseline = "top";
