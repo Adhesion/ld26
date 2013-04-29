@@ -222,6 +222,8 @@ Main.prototype.getAssets = function() {
 		{ name: 'assets/intro/intro_radmars2.png', type: 'img' },
 		{ name: 'assets/intro/intro_mars.png', type: 'img' },
 		{ name: 'assets/hud/notes.png', type: 'img' },
+        { name: 'assets/hud/note3.png', type: 'img' },
+        { name: 'assets/hud/note4.png', type: 'img' },
 		{ name: 'assets/models/pyramid.js', type: 'model' }
 	];
 };

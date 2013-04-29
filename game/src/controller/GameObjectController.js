@@ -346,5 +346,6 @@ GameObjectController.prototype.bossHide = function () {
 
 GameObjectController.prototype.enableKey = function (key) {
     this.enabledKeys[key] = true;
-    // maybe fuck with UI controller here (to add to HUD)
+    // fuck with UI controller here (to add to HUD)
+    this.main.state.uiController.showKeyUI( key );
 };

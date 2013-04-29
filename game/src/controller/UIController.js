@@ -29,9 +29,31 @@ function UIController(main) {
             alignment: THREE.SpriteAlignment.topLeft
         })
     );
+    this.note3 = new THREE.Sprite(
+        new THREE.SpriteMaterial({
+            map: main.loader.get( "assets/hud/note3.png" ),
+            useScreenCoordinates: true,
+            alignment: THREE.SpriteAlignment.topLeft
+        })
+    );
+    this.note4 = new THREE.Sprite(
+        new THREE.SpriteMaterial({
+            map: main.loader.get( "assets/hud/note4.png" ),
+            useScreenCoordinates: true,
+            alignment: THREE.SpriteAlignment.topLeft
+        })
+    );
 
-    this.notes.position.set( window.innerWidth - 320, 20, 0 );
+    console.log( "x pos: " + (window.innerWidth / 2 - 149) );
+    console.log( "y pos: " + window.innerHeight * 0.85 );
+    this.notes.position.set( window.innerWidth / 2 - 149, window.innerHeight * 0.85, 0 );
     this.notes.scale.set( 298, 13, 1 );
+
+    this.note3.position.set( window.innerWidth / 2 + 108, window.innerHeight * 0.85, 0 );
+    this.note3.scale.set( 28, 13, 1 );
+
+    this.note4.position.set( window.innerWidth / 2 + 136, window.innerHeight * 0.85, 0 );
+    this.note4.scale.set( 13, 13, 1 );
 
     this.barBg = new THREE.Mesh(
         new THREE.PlaneGeometry( 100, 30 ),
@@ -86,4 +108,8 @@ UIController.prototype.update = function () {
     this.scoreTxt.nodeValue = "" + Math.round(this.displayScore);
     */
 };
- 
+
+UIController.prototype.showKeyUI = function (val) {
+    if( val == 3 ) this.scene.add( this.note3 );
+    else if( val == 4 ) this.scene.add( this.note4 );
+};
