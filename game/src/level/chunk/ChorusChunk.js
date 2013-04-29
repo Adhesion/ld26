@@ -15,10 +15,34 @@ ChorusChunk.prototype.constructor = IntroChunk;
 ChorusChunk.prototype.build = function() {
     this.items = [
         // camera Vector3 pos, Vector3 target default is (0,-200, 200) --> (0,0,0)
-        {time:2.0, action:function(game){ game.moveCamera(new THREE.Vector3(0,-200, 170), new THREE.Vector3(0,0,0), 1.0) } },
-
-        // pass game object controller, game.
-        // basic baddies: pos, size, note(0-14)	
+        
+        {time:2.0, action:function(game){ game.bossMove(new THREE.Vector3(700, 0, 0)) } },
+        {time:2.0, action:function(game){ game.moveCamera(new THREE.Vector3( -300, 0, 200), new THREE.Vector3(500,0,0), 2.0) } },
+        
+        {time:4.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(0,800,0), 5, 14) ) } },
+		{time:5.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(0,800,0), 5, 9) ) } },
+		{time:6.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(0,800,0), 5, 4) ) } },
+        
+		{time:8, action:function(game){ game.makeBossLinkedBaddies( [
+            new Baddie(new THREE.Vector3(-10,800,0), 5, 7),
+            new Baddie(new THREE.Vector3(-10,850,0), 5, 10),
+            new Baddie(new THREE.Vector3(10,900,0), 5, 11),
+            new Baddie(new THREE.Vector3(-10,950,0), 5, 14) ])}},    
+    
+		{time:10, action:function(game){ game.makeLinkedBaddies( [
+            new Baddie(new THREE.Vector3(-10,800,0), 5, 7),
+            new Baddie(new THREE.Vector3(-10,850,0), 5, 10),
+            new Baddie(new THREE.Vector3(10,900,0), 5, 13),
+            new Baddie(new THREE.Vector3(10,900,0), 5, 14),
+            new Baddie(new THREE.Vector3(-10,950,0), 5, 12) ])}},
+		
+		{time:12, action:function(game){ game.makeBossLinkedBaddies( [
+            new Baddie(new THREE.Vector3(-10,800,0), 5, 9),
+            new Baddie(new THREE.Vector3(-10,850,0), 5, 6),
+            new Baddie(new THREE.Vector3(10,900,0), 5, 2),
+            new Baddie(new THREE.Vector3(10,900,0), 5, 3),
+            new Baddie(new THREE.Vector3(-10,950,0), 5, 0) ])}},
+		
 		
         // reset camera to default position. (time)
         {time:14.0, action:function(game){ game.defaultCamera(1.5)} },
@@ -28,7 +52,8 @@ ChorusChunk.prototype.build = function() {
     ];
 };
 
-//7 10 5
-//11 12 10
-//2 6 5
-
+/*
+7 10 13 14 12
+9 6 2 3 0
+7 10 11 14
+*/
