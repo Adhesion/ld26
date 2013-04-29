@@ -2,9 +2,9 @@ function ScorePopup(pos, color, score) {
     this.score = score;
     this.color = color;
     this.pos = pos;
-    this.vel = new THREE.Vector3(0,0,20); // move up?
+    this.vel = new THREE.Vector3(0,0,40); // move up?
     this.holder = new THREE.Object3D();
-    this.life = this.maxLife = 1.0;
+    this.life = this.maxLife = 0.5;
     this.pos = pos;
 
     this.canvas = document.createElement("canvas");
@@ -54,7 +54,7 @@ ScorePopup.prototype.update = function (dt) {
     }
 
     this.plane.lookAt(window.main.state.camera.position);
-    //this.mat.opacity = (this.life * 2) / this.maxLife;
+    this.mat.opacity = (this.life * 2) / this.maxLife;
 };
 
 ScorePopup.prototype.dispose = function () {

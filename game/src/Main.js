@@ -146,9 +146,13 @@ function Main() {
     window.game_score = 0;
     window.game_win = false;
 
+    this.setState( new Loading() );
+
 	this.loader = new Loader();
 	this.loader.load( this.getAssets() );
 	this.tryToStart();
+
+
 }
 
 Main.prototype.tryToStart = function() {
@@ -773,13 +777,138 @@ SplashController.prototype.update = function( dt ) {
     this.camera.position.y = Math.sin(this.sway) * 10;
     this.camera.lookAt(new THREE.Vector3());
 
-    this.bgSprite.position.set( this.cx, this.cy + 150, 0 );
+    this.bgSprite.position.set( this.cx, this.cy + 200, 0 );
     this.bgSprite.material.opacity = Math.round( this.blink );
 
     for( var i=0; i<this.stars.length; i++){
         this.stars[i].update(dt/1000);
     }
 
+
+    this.blink += dt/1000 * 2;
+    if(this.blink > 1 ) this.blink = 0;
+
+}
+
+
+
+
+function Loading() {
+}
+
+Loading.prototype.render = function( game ) {
+    game.renderer.render(this.scene, this.camera);
+}
+
+Loading.prototype.onStart = function( game ) {
+    this.game = game;
+    this.scene = new THREE.Scene();
+    this.scene.add( new THREE.AmbientLight( 0x222222 ) );
+    this.game.renderer.setClearColor( 0x000000, 1 );
+
+    this.camera = new THREE.PerspectiveCamera(
+        60,
+        window.innerWidth / window.innerHeight,
+        1,
+        10000
+    );
+
+    this.camera.position.z = 100;
+    this.camera.lookAt( new THREE.Vector3() );
+
+    this.controller = new LoadingController( game, this.camera, this.scene );
+    game.controllers.push( this.controller );
+
+};
+
+Loading.prototype.resize = function( width, height ) {
+    this.camera.right = width;
+    this.camera.bottom = height;
+    this.camera.updateProjectionMatrix();
+
+    this.controller.resize( width, height );
+}
+
+Loading.prototype.onStop = function( game) {
+    this.controller.onStop();
+    game.controllers = [];
+};
+
+function LoadingController( game, camera, scene ) {
+    this.game = game;
+
+    this.camera = camera;
+
+    this.sway = 0;
+
+    this.cx = camera.right / 2;
+    this.cy = camera.bottom / 2;
+
+    this.counter = 0;
+
+    var tmat = new THREE.MeshPhongMaterial( { color: 0xffffff, shading: THREE.FlatShading  } );
+
+    var scoreText = "LOADING";
+    var textGeom = new THREE.TextGeometry( scoreText,
+        {
+            size: 20, height: 4, curveSegments: 4,
+            font: "helvetiker", style: "normal"
+        });
+
+    this.scoreMesh = new THREE.Mesh(textGeom, tmat );
+    textGeom.computeBoundingBox();
+    var textWidth = textGeom.boundingBox.max.x - textGeom.boundingBox.min.x;
+    this.scoreMesh.position.set( -0.5 * textWidth, -40, 120 );
+
+
+    new TWEEN.Tween(this.scoreMesh.position).easing(TWEEN.Easing.Quadratic.Out).to({x: -0.5 * textWidth, y: -15, z:0}, 1.5*1000).start();
+
+    scene.add(this.scoreMesh);
+
+
+    this.light1= new THREE.PointLight( 0xffffff, 1, 3000 );
+    this.light1.position.set( 1000, 0, 0 );
+
+    this.light2= new THREE.PointLight( 0xffffff, 2, 3000 );
+    this.light2.position.set( 0, 1000, 0 );
+
+    this.light3= new THREE.PointLight( 0xffffff, 1, 3000 );
+    this.light3.position.set( 0, 0, 1000 );
+
+    this.light4= new THREE.PointLight( 0xffffff, 1, 3000 );
+    this.light4.position.set( 0, -1000, 0 );
+
+    scene.add( this.light1 );
+    scene.add( this.light2 );
+    scene.add( this.light3 );
+    scene.add( this.light4 );
+
+
+    this.resize( window.innerWidth, window.innerHeight );
+}
+
+LoadingController.prototype.resize = function( width, height ) {
+    this.cx = width / 2;
+    this.cy = height / 2;
+
+
+    this.camera.aspect = width / height;
+    this.camera.updateProjectionMatrix();
+}
+
+LoadingController.prototype.onStop = function() {
+
+}
+
+LoadingController.prototype.update = function( dt ) {
+    this.counter += dt;
+
+    this.sway += dt * 0.5 / 1000;
+    if( this.sway > Math.PI * 2) this.sway -= Math.PI*2;
+
+    this.camera.position.x = Math.cos(this.sway) * 10;
+    this.camera.position.y = Math.sin(this.sway) * 10;
+    this.camera.lookAt(new THREE.Vector3());
 
     this.blink += dt/1000 * 2;
     if(this.blink > 1 ) this.blink = 0;

@@ -11,15 +11,8 @@ function Avatar() {
 
     this.range = 100;
 
-    this.rangeMat = new THREE.MeshBasicMaterial({ color:0xffffff, wireframe:true });
-    var rangeGeom = new THREE.Geometry();
-    var a = 0;
-    var links = 10;
-
-    for( var i=0; i<links+1; i++){
-        a = Math.PI * 2 * (i/links);
-        rangeGeom.vertices.push(new THREE.Vector3(Math.cos(a) * this.range, Math.sin(a) * this.range, 0));
-    }
+    this.rangeMat = new THREE.MeshBasicMaterial({ color:0xffffff, transparent:true });
+    var rangeGeom = new THREE.TorusGeometry(this.range, 1, 1, 10);
 
     this.rangeMesh = new THREE.Line(rangeGeom, this.rangeMat, THREE.LineStrip);
     this.holder.add(this.rangeMesh);
