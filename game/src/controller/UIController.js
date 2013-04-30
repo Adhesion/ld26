@@ -180,7 +180,7 @@ UIController.prototype.updateCanvas = function(){
     context.fillStyle = 'white';
     context.textAlign = "right";
     context.textBaseline = "top";
-    context.fillText("" + Math.floor(this.displayScore), this.canvas.width-5, 0);
+    context.fillText("" + Math.floor(this.score), this.canvas.width-5, 0);
 }
 
 
@@ -203,6 +203,9 @@ UIController.prototype.resize = function( width, height ) {
 UIController.prototype.addScore = function (val) {
     this.score += val;
     window.game_score = this.score;
+
+    this.updateCanvas();
+    this.scoreTex.needsUpdate = true;
 };
 
 UIController.prototype.update = function () {
@@ -243,9 +246,6 @@ UIController.prototype.update = function () {
         if (this.score - this.displayScore <= 1) {
             this.displayScore = this.score;
         }
-
-        this.updateCanvas();
-        this.scoreTex.needsUpdate = true;
     }
 
     /*

@@ -20,7 +20,7 @@ function Avatar() {
         new THREE.MeshPhongMaterial({ color:0x9572c0, transparent:true, shading: THREE.FlatShading  })
     ];
 
-    var rangeGeom = new THREE.TorusGeometry(this.range, 1, 4, 10);
+    var rangeGeom = new THREE.TorusGeometry(this.range, 0.2, 4, 10);
     var range2Geom = new THREE.TorusGeometry(this.range-25, 30, 4, 10);
 
     this.rangeMesh = new THREE.Mesh(rangeGeom, this.rangeMat);
@@ -48,8 +48,8 @@ Avatar.prototype.update = function (dt) {
         this.rangeMesh.material.opacity = 1;
     }
 
-    this.rangeMesh.rotation.z += dt;
-    this.range2Mesh.rotation.z += dt;
+    this.rangeMesh.rotation.z += dt * 0.25;
+    this.range2Mesh.rotation.z += dt * 0.25;
 
     this.range2Mesh.scale.x += dt * 5;
     this.range2Mesh.scale.y += dt * 5;

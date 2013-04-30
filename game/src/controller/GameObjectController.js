@@ -174,9 +174,6 @@ GameObjectController.prototype.spawnDieParticles = function (baddie) {
         this.main.state.scene.add(particle.holder);
     }
 
-    var shockwave = new ShockwaveParticle(baddie.pos.clone(), baddie.color, baddie.size);
-    this.particles.push(shockwave);
-    this.main.state.scene.add(shockwave.holder);
 };
 
 GameObjectController.prototype.spawnScoreParticle = function (baddie, score, offset) {
@@ -393,6 +390,10 @@ GameObjectController.prototype.hitBaddie = function (baddie, chain) {
     this.main.state.uiController.addScore(50+ 55* this.combo);
     this.combo++;
     //TODO: add some score
+
+    var shockwave = new ShockwaveParticle(baddie.pos.clone(), baddie.color, baddie.size);
+    this.particles.push(shockwave);
+    this.main.state.scene.add(shockwave.holder);
 };
 
 GameObjectController.prototype.breakChain = function () {

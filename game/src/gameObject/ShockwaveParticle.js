@@ -3,7 +3,7 @@ function ShockwaveParticle(pos, color, size) {
     this.pos = pos;
     this.vel = new THREE.Vector3(0,0,40); // move up?
     this.holder = new THREE.Object3D();
-    this.life = this.maxLife = 0.25;
+    this.life = this.maxLife = 0.4;
     this.pos = pos;
 
 
@@ -11,9 +11,9 @@ function ShockwaveParticle(pos, color, size) {
     this.mat = new THREE.MeshPhongMaterial({ color:color, transparent:true, shading: THREE.FlatShading  });
     this.mat.blending = THREE.AdditiveAlphaBlending;
 
-    this.geom = new THREE.TorusGeometry(this.size * 5, 10, 4, 10);
+    this.geom = new THREE.TorusGeometry(this.size * 5, 20, 4, 10);
     this.mesh = new THREE.Mesh(this.geom, this.mat);
-    this.mesh.scale.z = 0.001;
+    this.mesh.scale.z = 0.01;
 
     this.holder.add( this.mesh );
 
