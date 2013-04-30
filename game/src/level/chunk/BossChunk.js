@@ -18,7 +18,7 @@ BossChunk.prototype.build = function() {
         {time:1.0, action:function(game){ game.enableKey(4) } },
 
         {time:1.0, action:function(game){
-            game.bossAppear(new THREE.Vector3(0, 800, 300))
+            game.bossAppear(new THREE.Vector3(0, 700, 300))
             game.bossMove(new THREE.Vector3(0, 500, 0)) } },
         
         // camera Vector3 pos, Vector3 target default is (0,-200, 200) --> (0,0,0)
@@ -46,9 +46,7 @@ BossChunk.prototype.build = function() {
             new Baddie(new THREE.Vector3(100,550,0), 5, 2),
             new Baddie(new THREE.Vector3(110,600,0), 5, 9),
             new Baddie(new THREE.Vector3(100,650,0), 5, 6) ])}},
-		
-		{time:15.0, action:function(game){ game.bossMove(new THREE.Vector3(700, 0, 0)) } },
-		
+				
         // this is an easy way to add 'padding' to the end of a chunk
         {time:16.0, action:function(game){ }}
     ];
