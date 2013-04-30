@@ -234,6 +234,13 @@ Main.prototype.getAssets = function() {
 		{ name: 'assets/intro/intro_radmars2.png', type: 'img' },
 		{ name: 'assets/intro/intro_mars.png', type: 'img' },
 
+        { name: 'assets/skybox/back.png', type: 'img' },
+        { name: 'assets/skybox/bot.png', type: 'img' },
+        { name: 'assets/skybox/front.png', type: 'img' },
+        { name: 'assets/skybox/left.png', type: 'img' },
+        { name: 'assets/skybox/right.png', type: 'img' },
+        { name: 'assets/skybox/top.png', type: 'img' },
+
 		{ name: 'assets/hud/note0.png', type: 'img' },
 		{ name: 'assets/hud/note1.png', type: 'img' },
 		{ name: 'assets/hud/note2.png', type: 'img' },
@@ -349,6 +356,24 @@ GameState.prototype.onStart = function( game ) {
 
 		// more passes?
 	}
+
+    var materialArray = [];
+    materialArray.push(new THREE.MeshBasicMaterial( { map: game.loader.get( "assets/skybox/right.png" ), fog:false }));
+    materialArray.push(new THREE.MeshBasicMaterial( { map: game.loader.get( "assets/skybox/left.png" ), fog:false }));
+    materialArray.push(new THREE.MeshBasicMaterial( { map: game.loader.get( "assets/skybox/top.png" ), fog:false }));
+    materialArray.push(new THREE.MeshBasicMaterial( { map: game.loader.get( "assets/skybox/bot.png" ), fog:false }));
+    materialArray.push(new THREE.MeshBasicMaterial( { map: game.loader.get( "assets/skybox/front.png" ), fog:false }));
+    materialArray.push(new THREE.MeshBasicMaterial( { map: game.loader.get( "assets/skybox/back.png" ), fog:false }));
+
+    for (var i = 0; i < 6; i++){
+        materialArray[i].side = THREE.BackSide;
+    }
+    var skyboxMaterial = new THREE.MeshFaceMaterial( materialArray );
+    var skyboxGeom = new THREE.CubeGeometry( 5000, 5000, 5000, 1, 1, 1 );
+    var skybox = new THREE.Mesh( skyboxGeom, skyboxMaterial );
+
+    this.scene.add( skybox );
+
 }
 
 GameState.prototype.onStop = function( game ) {

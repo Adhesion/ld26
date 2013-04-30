@@ -22,7 +22,7 @@ function SauceBoss() {
     this.ring1 = new THREE.Mesh(rg1, rm1);
 
     var rg2 = window.main.loader.get("assets/models/boss_fatRing.js");
-    var rm2 = new THREE.MeshPhongMaterial( { color: 0x9572c0, shading: THREE.FlatShading  } );
+    var rm2 = new THREE.MeshPhongMaterial( { color: 0xffffff, shading: THREE.FlatShading  } );
     this.ring2 = new THREE.Mesh(rg2, rm2);
 
     this.holder.add(this.spikes);

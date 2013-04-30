@@ -198,6 +198,62 @@ GameObjectController.prototype.spawnBossHitParticles = function () {
     }
 };
 
+GameObjectController.prototype.spawnBossDieParticles = function () {
+    var i;
+    var particle;
+
+    for (i = 0; i < 10; i++) {
+        particle = new Particle(this.boss.pos.clone(), 0xf53d54, this.boss.wireColor, 50, 5.0, 600);
+        this.particles.push(particle);
+        this.main.state.scene.add(particle.holder);
+    }
+
+    for (i = 0; i < 10; i++) {
+        particle = new Particle(this.boss.pos.clone(), 0x04bf9d, this.boss.wireColor, 70, 5.0, 800);
+        this.particles.push(particle);
+        this.main.state.scene.add(particle.holder);
+    }
+
+    for (i = 0; i < 10; i++) {
+        particle = new Particle(this.boss.pos.clone(), 0x2e6fac, this.boss.wireColor, 50, 5.0, 800);
+        this.particles.push(particle);
+        this.main.state.scene.add(particle.holder);
+    }
+
+    for (i = 0; i < 10; i++) {
+        particle = new Particle(this.boss.pos.clone(), 0xf2e85c, this.boss.wireColor, 70, 5.0, 800);
+        this.particles.push(particle);
+        this.main.state.scene.add(particle.holder);
+    }
+
+    for (i = 0; i < 10; i++) {
+        particle = new Particle(this.boss.pos.clone(), 0x9572c0, this.boss.wireColor, 100, 5.0, 400);
+        this.particles.push(particle);
+        this.main.state.scene.add(particle.holder);
+    }
+
+    var shockwave = new ShockwaveParticle(this.boss.pos.clone(), 0x04bf9d, 500);
+    this.particles.push(shockwave);
+    this.main.state.scene.add(shockwave.holder);
+
+    shockwave = new ShockwaveParticle(this.boss.pos.clone(), 0x04bf9d, 600);
+    this.particles.push(shockwave);
+    this.main.state.scene.add(shockwave.holder);
+
+    shockwave = new ShockwaveParticle(this.boss.pos.clone(), 0x04bf9d, 700);
+    this.particles.push(shockwave);
+    this.main.state.scene.add(shockwave.holder);
+
+    shockwave = new ShockwaveParticle(this.boss.pos.clone(), 0x04bf9d, 800);
+    this.particles.push(shockwave);
+    this.main.state.scene.add(shockwave.holder);
+
+    shockwave = new ShockwaveParticle(this.boss.pos.clone(), 0x04bf9d, 900);
+    this.particles.push(shockwave);
+    this.main.state.scene.add(shockwave.holder);
+
+};
+
 GameObjectController.prototype.spawnChainParticles = function (baddie) {
     var i;
     var particle;
@@ -355,7 +411,7 @@ GameObjectController.prototype.hitBaddie = function (baddie, chain) {
                 this.shake = 5.0;
                 this.main.state.scene.remove(this.boss.holder);
                 this.boss.active = false;
-
+                this.spawnBossDieParticles();
                 window.game_win = true;
             }
         }
