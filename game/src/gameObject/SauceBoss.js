@@ -31,7 +31,7 @@ function SauceBoss() {
 
     this.pos = new THREE.Vector3();
 
-    this.hp = this.startHP = 5;
+    this.hp = this.startHP = 8;
 
     this.speed = 150;
 

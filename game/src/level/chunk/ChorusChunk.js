@@ -84,19 +84,15 @@ ChorusChunk.prototype.build = function() {
             new Baddie(new THREE.Vector3(850,-120,0), 5, 3),
             new Baddie(new THREE.Vector3(900,-100,0), 5, 0) ])}},
 		
-		{time:40.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(700, -100, 50), 5, 1) ) } },
-		{time:41.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(700, -100, 50), 5, 5) ) } },
-		{time:42.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(700, -100, 50), 5, 0) ) } },
-
-		{time:45.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(700, -100, 50), 5, 7) ) } },
-		{time:46.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(700, -100, 50), .5, 10) ) } },
-        {time:47.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(700, -100, 50), .5, 11) ) } },
-		{time:48.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(700, -100, 50), .5, 14) ) } },
+		{time:40.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(700, -100, 50), 5, 7) ) } },
+		{time:41.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(700, -100, 50), .5, 10) ) } },
+        {time:42.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(700, -100, 50), .5, 11) ) } },
+		{time:43.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(700, -100, 50), .5, 14) ) } },
 		
         // reset camera to default position. (time)
 
         // this is an easy way to add 'padding' to the end of a chunk
-        {time:50.0, action:function(game){ }}
+        {time:46.0, action:function(game){ }}
     ];
 };
 
