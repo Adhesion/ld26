@@ -16,7 +16,10 @@ SparseChunk.prototype.build = function() {
     this.items = [
         //camera Vector3 pos, Vector3 target default is (0,-200, 200) --> (0,0,0)
 
-		{time:3.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(0,800,0), 5, 0) ) } },
+		{time:2.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(0,800,0), 5, 0) ) } },
+		{time:2.5, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(0,800,0), 5, 0) ) } },
+		{time:3.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(0,800,0), 2, 0) ) } },
+
 
 		{time:5.0, action:function(game){ game.makeLinkedBaddies( [
             new Baddie(new THREE.Vector3(-200,800,0), 5, 5),
