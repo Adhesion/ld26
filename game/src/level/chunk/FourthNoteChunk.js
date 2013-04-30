@@ -34,7 +34,7 @@ FourthNoteChunk.prototype.build = function() {
             new Baddie(new THREE.Vector3(800,0,0), 5, 5),
             new Baddie(new THREE.Vector3(850,0,0), 5, 8),
             new Baddie(new THREE.Vector3(900,0,0), 5, 7),
-            new Baddie(new THREE.Vector3(950,0,0), 5, 10) ])}},
+            new Baddie(new THREE.Vector3(950,0,0), 1, 10) ])}},
         
         {time:17.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(800,0,0), 5, 2) ) } },
 		{time:18.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(800,0,0), 5, 5) ) } },
@@ -53,8 +53,8 @@ FourthNoteChunk.prototype.build = function() {
 		{time:28.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(-800,150,0), 5, 2) ) } },
             
         {time:30.0, action:function(game){ game.makeLinkedBaddies( [
-            new Baddie(new THREE.Vector3(-800,-150,0), 5, 11),
-            new Baddie(new THREE.Vector3(-850,-150,0), 5, 10),
+            new Baddie(new THREE.Vector3(-800,-150,0), 1, 11),
+            new Baddie(new THREE.Vector3(-850,-150,0), 1, 10),
             new Baddie(new THREE.Vector3(-900,-150,0), 5, 7) ])}},
         
         {time:32.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(-800,50,0), 5, 5) ) } },

@@ -15,14 +15,12 @@ BossChunk.prototype.constructor = IntroChunk;
 BossChunk.prototype.build = function() {
     this.items = [
         {time:0.0, action:function(game){ game.enableKey(3) } },
-        {time:1.0, action:function(game){ game.enableKey(4) } },
+        {time:0.0, action:function(game){ game.enableKey(4) } },
 
         {time:1.0, action:function(game){
-            game.bossAppear(new THREE.Vector3(0, 700, 300))
+            game.bossAppear(new THREE.Vector3(0, 750, 300))
             game.bossMove(new THREE.Vector3(0, 500, 0)) } },
-        
-        // camera Vector3 pos, Vector3 target default is (0,-200, 200) --> (0,0,0)
-        {time:2.0, action:function(game){ game.moveCamera(new THREE.Vector3(0,-200, 150), new THREE.Vector3(0,0,0), 1.0) } },
+        {time:1.0, action:function(game){ game.moveCamera(new THREE.Vector3(0,-150, 125), new THREE.Vector3(0,100,0), 1.0) } },
 		
 		{time:3.0, action:function(game){ game.makeBaddie( new Baddie(new THREE.Vector3(0,500,0), 5, 9) ) } },
 		

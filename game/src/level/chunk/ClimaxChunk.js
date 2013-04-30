@@ -18,65 +18,77 @@ ClimaxChunk.prototype.build = function() {
         {time:0.0, action:function(game){ game.enableKey(4) } },
 
         // start time 3:04
-        {time:2.0, action:function(game){ game.moveCamera(new THREE.Vector3(0,-200, 170), new THREE.Vector3(0,0,0), 1.0) } },
+        {time:0.0, action:function(game){
+        	game.bossAppear(new THREE.Vector3(700, -100, 50))
+        	game.bossMove(new THREE.Vector3(0, -700, 0)) } },
+        {time:2.0, action:function(game){ game.moveCamera(new THREE.Vector3( 0, 100, 200), new THREE.Vector3(0,-200,0), 1.0) } },
 
 		{time:6.0, action:function(game){ game.makeLinkedBaddies( [
-            new Baddie(new THREE.Vector3(-10,800,0), 5, 1),
-            new Baddie(new THREE.Vector3(-10,850,0), 5, 1),
-            new Baddie(new THREE.Vector3(10,900,0), 5, 1),
-            new Baddie(new THREE.Vector3(-10,950,0), 5, 4) ])}},  
+            new Baddie(new THREE.Vector3(-50,-700,0), 5, 1),
+            new Baddie(new THREE.Vector3(-60,-750,0), 5, 1),
+            new Baddie(new THREE.Vector3(-50,-800,0), 5, 1),
+            new Baddie(new THREE.Vector3(-60,-850,0), 5, 4) ])}},  
 		
 		{time:8.0, action:function(game){ game.makeLinkedBaddies( [
-            new Baddie(new THREE.Vector3(-10,800,0), 5, 6),
-            new Baddie(new THREE.Vector3(-10,850,0), 5, 6),
-            new Baddie(new THREE.Vector3(10,900,0), 5, 6),
-            new Baddie(new THREE.Vector3(-10,950,0), 5, 9) ])}},  
+            new Baddie(new THREE.Vector3(50,-700,0), 5, 6),
+            new Baddie(new THREE.Vector3(60,-750,0), 5, 6),
+            new Baddie(new THREE.Vector3(50,-800,0), 5, 6),
+            new Baddie(new THREE.Vector3(60,-850,0), .5, 9) ])}},  
 
 		{time:10.0, action:function(game){ game.makeBossLinkedBaddies( [
-            new Baddie(new THREE.Vector3(-10,800,0), 5, 11),
-            new Baddie(new THREE.Vector3(-10,850,0), 5, 11),
-            new Baddie(new THREE.Vector3(10,900,0), 5, 11),
-            new Baddie(new THREE.Vector3(-10,950,0), 5, 14) ])}},  		
+            new Baddie(new THREE.Vector3(-60,-700,0), .5, 11),
+            new Baddie(new THREE.Vector3(-50,-750,0), .5, 11),
+            new Baddie(new THREE.Vector3(-60,-800,0), .5, 11),
+            new Baddie(new THREE.Vector3(-50,-850,0), .5, 14) ])}},  		
+
+        {time:14.0, action:function(game){ game.bossMove(new THREE.Vector3(0, -600, 0)) } },
+        {time:14.0, action:function(game){ game.moveCamera(new THREE.Vector3( 0, 80, 180), new THREE.Vector3(0,-200,0), 1.0) } },
 
 		{time:12.0, action:function(game){ game.makeLinkedBaddies( [
-            new Baddie(new THREE.Vector3(-10,800,0), 5, 11),
-            new Baddie(new THREE.Vector3(-10,850,0), 5, 14),
-            new Baddie(new THREE.Vector3(-10,950,0), 5, 7) ])}},  		
+            new Baddie(new THREE.Vector3(50,-650,0), .5, 11),
+            new Baddie(new THREE.Vector3(60,-700,0), .5, 14),
+            new Baddie(new THREE.Vector3(50,-750,0), 5, 7) ])}},  		
 		
 		{time:13.0, action:function(game){ game.makeLinkedBaddies( [
-            new Baddie(new THREE.Vector3(-10,800,0), 5, 11),
-            new Baddie(new THREE.Vector3(-10,850,0), 5, 14),
-            new Baddie(new THREE.Vector3(-10,950,0), 5, 7) ])}},  
+            new Baddie(new THREE.Vector3(-50,-650,0), .5, 11),
+            new Baddie(new THREE.Vector3(-60,-700,0), .5, 14),
+            new Baddie(new THREE.Vector3(-50,-750,0), 5, 7) ])}},  
 
 		{time:16.0, action:function(game){ game.makeBossLinkedBaddies( [
-            new Baddie(new THREE.Vector3(-10,800,0), 5, 4),
-            new Baddie(new THREE.Vector3(-10,850,0), 5, 1),
-            new Baddie(new THREE.Vector3(-10,950,0), 5, 2) ])}}, 
+            new Baddie(new THREE.Vector3(50,-600,0), 5, 4),
+            new Baddie(new THREE.Vector3(60,-650,0), 5, 1),
+            new Baddie(new THREE.Vector3(50,-700,0), 5, 2) ])}}, 
+
+        {time:21.0, action:function(game){ game.bossMove(new THREE.Vector3(0, -500, 0)) } },
+        {time:21.0, action:function(game){ game.moveCamera(new THREE.Vector3( 0, 70, 150), new THREE.Vector3(0,-200,0), 1.0) } },
 
 		{time:19.0, action:function(game){ game.makeLinkedBaddies( [
-            new Baddie(new THREE.Vector3(-10,800,0), 5, 9),
-            new Baddie(new THREE.Vector3(-10,850,0), 5, 6),
-            new Baddie(new THREE.Vector3(-10,950,0), 5, 7) ])}}, 
+            new Baddie(new THREE.Vector3(-50,-500,0), .5, 9),
+            new Baddie(new THREE.Vector3(-60,-550,0), .5, 9),
+            new Baddie(new THREE.Vector3(-50,-600,0), .5, 9) ])}}, 
         
-        {time:22.0, action:function(game){ game.makeLinkedBaddies( [
-            new Baddie(new THREE.Vector3(-10,800,0), 5, 14),
-            new Baddie(new THREE.Vector3(-10,850,0), 5, 11),
-            new Baddie(new THREE.Vector3(-10,950,0), 5, 12) ])}}, 
+        {time:22.0, action:function(game){ game.makeBossLinkedBaddies( [
+            new Baddie(new THREE.Vector3(50,-500,0), .5, 14),
+            new Baddie(new THREE.Vector3(60,-550,0), .5, 11),
+            new Baddie(new THREE.Vector3(50,-600,0), .5, 12) ])}}, 
+		
+		{time:26.0, action:function(game){ game.bossMove(new THREE.Vector3(0, -400, 0)) } },
+		{time:26.0, action:function(game){ game.moveCamera(new THREE.Vector3( 0, 60, 130), new THREE.Vector3(0,-200,0), 1.0) } },
 		
 		{time:24.0, action:function(game){ game.makeLinkedBaddies( [
-            new Baddie(new THREE.Vector3(-10,800,0), 5, 4),
-            new Baddie(new THREE.Vector3(-10,850,0), 5, 4),
-            new Baddie(new THREE.Vector3(-10,950,0), 5, 4) ])}},
+            new Baddie(new THREE.Vector3(-50,-400,0), 5, 1),
+            new Baddie(new THREE.Vector3(-60,-450,0), 5, 1),
+            new Baddie(new THREE.Vector3(-50,-500,0), 5, 1) ])}},
 		
-		{time:26.0, action:function(game){ game.makeLinkedBaddies( [
-            new Baddie(new THREE.Vector3(-10,800,0), 5, 1),
-            new Baddie(new THREE.Vector3(-10,850,0), 5, 1),
-            new Baddie(new THREE.Vector3(-10,950,0), 5, 1) ])}},
+		{time:26.0, action:function(game){ game.makeBossLinkedBaddies( [
+            new Baddie(new THREE.Vector3(50,-400,0), .5, 9),
+            new Baddie(new THREE.Vector3(60,-450,0), 5, 6),
+            new Baddie(new THREE.Vector3(50,-500,0), 5, 7) ])}},
 		
-		{time:28.0, action:function(game){ game.makeLinkedBaddies( [
-            new Baddie(new THREE.Vector3(-10,800,0), 5, 2),
-            new Baddie(new THREE.Vector3(-10,850,0), 5, 2),
-            new Baddie(new THREE.Vector3(-10,950,0), 5, 2) ])}},
+		{time:28.0, action:function(game){ game.makeBossLinkedBaddies( [
+            new Baddie(new THREE.Vector3(-50,-400,0), 5, 4),
+            new Baddie(new THREE.Vector3(-60,-450,0), 5, 1),
+            new Baddie(new THREE.Vector3(-50,-500,0), 5, 2) ])}},
 		
 		//death		
 
