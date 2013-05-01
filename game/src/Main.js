@@ -143,31 +143,20 @@ function Main() {
 	window.onresize = this.resize.bind( this );
 
 	window.main = this;
-    window.game_score = 0;
-    window.game_win = false;
+	window.game_score = 0;
+	window.game_win = false;
 
-    this.setState( new Loading() );
+	this.setState( new Loading() );
 
 	this.loader = new Loader();
 	this.loader.load( this.getAssets() );
-	this.tryToStart();
-
-
-}
-
-Main.prototype.tryToStart = function() {
-
-	if( ! this.loader.done( this.getAssets() ) ) {
-		setTimeout( this.tryToStart.bind( this ), 50 );
-		return;
-	}
 
 	// start the shit
 	this.lastFrame = Date.now();
-	this.setState( new Intro() );
 	this.resize();
 	this.update();
-};
+
+}
 
 Main.prototype.getAssets = function() {
 	var hitAsset = function( base, prefix, vol ) {
@@ -926,6 +915,11 @@ LoadingController.prototype.onStop = function() {
 }
 
 LoadingController.prototype.update = function( dt ) {
+    var assets = this.game.getAssets();
+    if( this.game.loader.done( assets ) ) {
+        this.game.setState( new Intro() );
+    }
+
     this.counter += dt;
 
     this.sway += dt * 0.5 / 1000;
